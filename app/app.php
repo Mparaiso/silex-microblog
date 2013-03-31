@@ -1,5 +1,6 @@
 <?php
 use Silex\Provider\HttpCacheServiceProvider;
+use Silex\Provider\FormServiceProvider;
 use Mparaiso\Provider\BlogServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -22,7 +23,10 @@ $app->register(new TwigServiceProvider, array(
         "cache" => $app["temp"] . "/twig/"
     ),
 ));
+
 $app->register(new BlogServiceProvider);
+$app->register(new FormServiceProvider);
+
 /***
  * Controllers
  */

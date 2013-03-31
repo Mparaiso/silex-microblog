@@ -1,6 +1,8 @@
 {
     "require":{
-        "silex/silex":"*@dev"
+        "silex/silex":"*@dev",
+        "mparaiso/doctrineormserviceprovider":"*@dev",
+        "twig/twig":"*"
     },
     "autoload":{
         "psr-0":{

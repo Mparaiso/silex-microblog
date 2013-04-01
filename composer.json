@@ -7,7 +7,8 @@
         "symfony/form":"2.2.*",
         "symfony/validator":"2.2.*",
         "symfony/translation":"2.2.*",
-        "symfony/locale":"2.2.*"
+        "symfony/locale":"2.2.*",
+        "symfony/config":"2.2.*"
     },
     "autoload":{
         "psr-0":{

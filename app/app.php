@@ -1,5 +1,9 @@
 <?php
 use Silex\Provider\HttpCacheServiceProvider;
+use Silex\Provider\UrlGeneratorServiceProvider;
+use Silex\Provider\SessionServiceProvider;
+use Silex\Provider\TranslationServiceProvider;
+use Silex\Provider\ValidatorServiceProvider;
 use Silex\Provider\FormServiceProvider;
 use Mparaiso\Provider\BlogServiceProvider;
 use Silex\Provider\TwigServiceProvider;
@@ -26,29 +30,20 @@ $app->register(new TwigServiceProvider, array(
 
 $app->register(new BlogServiceProvider);
 $app->register(new FormServiceProvider);
+$app->register(new ValidatorServiceProvider);
+$app->register(new TranslationServiceProvider,array("locale_fallback"=>"en"));
+$app->register(new SessionServiceProvider);
+$app->register(new UrlGeneratorServiceProvider);
 
 /***
  * Controllers
  */
-$app->match("/", function (Application $app) {
-    $user  = array("nickname" => "John doe");
-    $posts = array(
-        array(
-            "author" => array("nickname" => "Jesus Christ"),
-            "body"   => "The holy bible"
-        ),
-        array(
-            "author" => array("nickname" => "Stan Lee"),
-            "body"   => "The amazing spiderman",
-        )
-    );
-    return $app["twig"]->render("blog.index", array(
-        "user" => $user, "posts" => $posts
-    ));
-});
 $app->match("/index", function (Request $req, Application $app) {
     #@note @silex forward request
     $sub = $req::create("/");
     return $app->handle($sub, HttpKernelInterface::SUB_REQUEST);
 });
+
+$app->mount("/", $app["blog.default_controller"]);
+
 return $app;

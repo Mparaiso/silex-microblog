@@ -1,0 +1,30 @@
+# Mparaiso.Blog.Entity.User.dcm.yml
+Mparaiso\Blog\Entity\User:
+  type: entity
+  table: blog_users
+  indexes:
+    user_nickname_index:
+      columns: [ nickname ]
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    nickname:
+      type: string
+      length: 100
+    email:
+      type: string
+      length: 255
+  oneToMany:
+    posts:
+      targetEntity: Mparaiso\Blog\Entity\Post
+      mappedBy: user
+      cascade: ["persist","merge"]
+  manyToMany:
+    roles:
+      targetEntity: Mparaiso\Blog\Entity\Role
+      #joinTable: blog_users_roles
+
+

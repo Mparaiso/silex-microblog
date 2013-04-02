@@ -1,5 +1,5 @@
 {
-    "hash": "10672e40f19ffd863d29975594dd5edb",
+    "hash": "ff6cb19e37ae64e9b3a468c4d0008df0",
     "packages": [
         {
             "name": "doctrine/common",
@@ -204,8 +204,70 @@
             "time": "2013-03-24 20:43:58"
         },
         {
+            "name": "monolog/monolog",
+            "version": "1.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Seldaek/monolog.git",
+                "reference": "1.4.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/1.4.1",
+                "reference": "1.4.1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "psr/log": ">=1.0,<2.0"
+            },
+            "require-dev": {
+                "doctrine/couchdb": "dev-master",
+                "mlehner/gelf-php": "1.0.*",
+                "raven/raven": "0.3.*"
+            },
+            "suggest": {
+                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+                "ext-mongo": "Allow sending log messages to a MongoDB server",
+                "mlehner/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "raven/raven": "Allow sending log messages to a Sentry server"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Monolog": "src/"
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "http://seld.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+            "homepage": "http://github.com/Seldaek/monolog",
+            "keywords": [
+                "log",
+                "logging",
+                "psr-3"
+            ],
+            "time": "2013-04-01 10:04:58"
+        },
+        {
             "name": "mparaiso/consoleserviceprovider",
-            "version": "0.0.5",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Mparaiso/consoleserviceprovider.git",
@@ -253,12 +315,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Mparaiso/doctrineormserviceprovider.git",
-                "reference": "0.0.5"
+                "reference": "0.0.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Mparaiso/doctrineormserviceprovider/zipball/0.0.5",
-                "reference": "0.0.5",
+                "url": "https://api.github.com/repos/Mparaiso/doctrineormserviceprovider/zipball/0.0.8",
+                "reference": "0.0.8",
                 "shasum": ""
             },
             "require": {
@@ -291,7 +353,7 @@
                 "orm",
                 "silex"
             ],
-            "time": "2013-03-25 16:16:09"
+            "time": "2013-04-02 08:01:15"
         },
         {
             "name": "pimple/pimple",
@@ -383,12 +445,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Silex.git",
-                "reference": "a5cb55ced63ece76550de1599ddcc60719373594"
+                "reference": "803f809cdaa409e5769b24db952655d7e9187677"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Silex/zipball/a5cb55ced63ece76550de1599ddcc60719373594",
-                "reference": "a5cb55ced63ece76550de1599ddcc60719373594",
+                "url": "https://api.github.com/repos/fabpot/Silex/zipball/803f809cdaa409e5769b24db952655d7e9187677",
+                "reference": "803f809cdaa409e5769b24db952655d7e9187677",
                 "shasum": ""
             },
             "require": {
@@ -456,7 +518,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2013-03-27 09:31:32"
+            "time": "2013-04-01 08:47:32"
         },
         {
             "name": "symfony/config",
@@ -1188,6 +1250,53 @@
             "time": "2013-02-28 14:29:34"
         },
         {
+            "name": "symfony/yaml",
+            "version": "v2.2.0",
+            "target-dir": "Symfony/Component/Yaml",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Yaml.git",
+                "reference": "v2.2.0-RC3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Yaml/zipball/v2.2.0-RC3",
+                "reference": "v2.2.0-RC3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Yaml\\": ""
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Yaml Component",
+            "homepage": "http://symfony.com",
+            "time": "2013-01-27 16:49:19"
+        },
+        {
             "name": "twig/twig",
             "version": "v1.12.2",
             "source": {
@@ -1237,13 +1346,22 @@
             "time": "2013-02-09 18:21:53"
         }
     ],
-    "packages-dev": null,
+    "packages-dev": [
+
+    ],
     "aliases": [
 
     ],
     "minimum-stability": "stable",
     "stability-flags": {
         "silex/silex": 20,
-        "mparaiso/doctrineormserviceprovider": 20
-    }
+        "mparaiso/doctrineormserviceprovider": 20,
+        "mparaiso/consoleserviceprovider": 20
+    },
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
 }

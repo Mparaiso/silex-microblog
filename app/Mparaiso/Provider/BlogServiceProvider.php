@@ -4,6 +4,7 @@ namespace Mparaiso\Provider;
 
 
 use Silex\ServiceProviderInterface;
+use Doctrine\ORM\Mapping\Driver\YamlDriver;
 use Mparaiso\Blog\Controller\DefaultController;
 use Silex\Application;
 
@@ -44,7 +45,7 @@ class BlogServiceProvider implements ServiceProviderInterface
         }
         $twigTemplates         = $app["twig.templates"];
         $app['twig.templates'] = array_merge($twigTemplates, $templates);
-
+        $app['orm.chain_driver']->addDriver(new YamlDriver(array($app["$n.resource.path"]."/doctrine")),'Mparaiso\Blog');
 
     }
 }

@@ -1,0 +1,41 @@
+# Doctrine.Tests.ORM.Mapping.User.dcm.yml
+Mparaiso\Blog\Entity\Role:
+  type: entity
+  table: blog_roles
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    name:
+      type: string
+      length: 50
+    role:
+      type: string
+      length: 200
+#  oneToOne:
+#    address:
+#      targetEntity: Address
+#      joinColumn:
+#        name: address_id
+#        referencedColumnName: id
+#  oneToMany:
+#    phonenumbers:
+#      targetEntity: Phonenumber
+#      mappedBy: user
+#      cascade: ["persist", "merge"]
+#  manyToMany:
+#    groups:
+#      targetEntity: Group
+#      joinTable:
+#        name: cms_users_groups
+#        joinColumns:
+#          user_id:
+#            referencedColumnName: id
+#        inverseJoinColumns:
+#          group_id:
+#            referencedColumnName: id
+#  lifecycleCallbacks:
+#    prePersist: [ doStuffOnPrePersist, doOtherStuffOnPrePersistToo ]
+#    postPersist: [ doStuffOnPostPersist ]

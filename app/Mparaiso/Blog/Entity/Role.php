@@ -3,35 +3,25 @@
 namespace Mparaiso\Blog\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\Role\RoleInterface;
 
 /**
  * Role
- *
- * @ORM\Table(name="blog_roles")
- * @ORM\Entity
  */
-class Role
+class Role implements RoleInterface
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=50)
      */
     private $name;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="role", type="string", length=200)
      */
     private $role;
 

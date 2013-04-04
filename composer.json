@@ -4,6 +4,9 @@
         "mparaiso/doctrineormserviceprovider":"*@dev",
         "mparaiso/consoleserviceprovider":"*@dev",
         "twig/twig":"*",
+        "symfony/doctrine-bridge":"2.2.*",
+        "symfony/monolog-bridge":"2.2.*",
+        "symfony/security":"2.2.*",
         "symfony/twig-bridge":"*",
         "symfony/form":"2.2.*",
         "symfony/validator":"2.2.*",
@@ -11,7 +14,8 @@
         "symfony/locale":"2.2.*",
         "symfony/config":"2.2.*",
         "monolog/monolog":"*",
-        "symfony/yaml":"2.2.*"
+        "symfony/yaml":"2.2.*",
+        "fp/lightopenid":"*@dev"
     },
     "autoload":{
         "psr-0":{

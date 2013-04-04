@@ -27,6 +27,10 @@ $templates['base'] = <<<EOF
     {% endblock %}
     </head>
     <body>
+    {% block header %}
+        <h4>http host : {{ app.request.httpHost }} </h4>
+        <h4>request uri : {{ app.request.requestUri }} </h4>
+    {% endblock %}
     {% block flash %}
         {% include app['blog.ns']~'.flash' %}
     {% endblock %}

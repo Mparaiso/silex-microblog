@@ -6,56 +6,36 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Post
- *
- * @ORM\Table(name="blog_posts", indexes={@ORM\Index(name="name_index", columns={"title"})})
- * @ORM\Entity
  */
 class Post
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255)
      */
     private $title;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="body", type="text")
      */
     private $body;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime")
      */
     private $created_at;
 
     /**
      * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime")
      */
     private $updated_at;
 
     /**
      * @var \Mparaiso\Blog\Entity\User
-     *
-     * @ORM\ManyToOne(targetEntity="Mparaiso\Blog\Entity\User", inversedBy="posts", cascade={"persist","merge"})
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     * })
      */
     private $user;
 

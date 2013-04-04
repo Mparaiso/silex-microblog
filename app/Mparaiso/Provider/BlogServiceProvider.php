@@ -45,7 +45,7 @@ class BlogServiceProvider implements ServiceProviderInterface
         }
         $twigTemplates         = $app["twig.templates"];
         $app['twig.templates'] = array_merge($twigTemplates, $templates);
-        $app['orm.chain_driver']->addDriver(new YamlDriver(array($app["$n.resource.path"]."/doctrine")),'Mparaiso\Blog');
+        $app['orm.chain_driver']->addDriver(new YamlDriver(array($app["$n.resource.path"]."/doctrine")),'Mparaiso');
 
     }
 }

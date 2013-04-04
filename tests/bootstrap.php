@@ -1,7 +1,8 @@
 <?php
 
 $autoload = require __DIR__."/../vendor/autoload.php";
-$autoload->add("",__DIR__."/../app/");
-$app = new \App();
 
-$app['http_cache']->run();
+$autoload->add("",__DIR__."/../app/");
+
+$app = new App();
+

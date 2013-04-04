@@ -4,17 +4,23 @@ Mparaiso\Blog\Entity\User:
   table: blog_users
   indexes:
     user_nickname_index:
-      columns: [ nickname ]
+      columns: [ username ]
   id:
     id:
       type: integer
       generator:
         strategy: AUTO
   fields:
-    nickname:
+    username:
+      type: string
+      length: 100
+    password:
       type: string
       length: 100
     email:
+      type: string
+      length: 255
+    salt:
       type: string
       length: 255
   oneToMany:

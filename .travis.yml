@@ -1,0 +1,11 @@
+language: php
+php:
+    - 5.3
+# variables d'envirronement
+#env:
+# - MARKME_DB_DRIVER= pdo_sqlite
+# install les packages avec composer
+before_script:
+    - composer install
+# executer phpunit
+script: phpunit

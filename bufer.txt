@@ -1,0 +1,22 @@
+here is where I check the response and try to log the user.
+// Provider returns valid data
+if ($openid->validate()) {
+  $attributes = $openid->getAttributes();
+  $app['monolog']->addDebug('Successfully logged in using openid');
+
+  $userProvider = new UserProvider($app['db']);
+  $isUserExist = $this->checkUserExist($userProvider, $attributes['contact/email']);
+
+  if ($isUserExist) {
+    $user = $userProvider->loadUserByUsername($attributes['contact/email']);
+    $app['monolog']->addDebug('User already exists with this mail');
+
+    $token = new UsernamePasswordToken($user, $user->getPassword(), 'secured', $user->getRoles());
+    $authToken = $app['security.authentication_manager']->authenticate($token);
+    $app['security']->setToken($authToken);
+
+    return $app->redirect('/index_dev.php/login_check');
+  } else {
+    //TODO: new user : insert into DB
+  }
+}

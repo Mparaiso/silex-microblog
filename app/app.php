@@ -1,5 +1,8 @@
 <?php
 use Silex\Provider\HttpCacheServiceProvider;
+use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
+use Mparaiso\Provider\LightOpenIdServiceProvider;
+use Silex\Provider\SecurityServiceProvider;
 use Mparaiso\Provider\ConsoleServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\DoctrineServiceProvider;
@@ -15,48 +18,95 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
+class App extends Silex\Application
+{
+    public function __construct(array $values = array())
+    {
+        parent::__construct($values);
 
-$app         = new Silex\Application;
-$app['root'] = dirname(__DIR__);
-$app['temp'] = __DIR__ . "/../temp/";
-if (getenv("environment") === "development") {
-    error_reporting(E_ALL);
-    $app["debug"] = TRUE;
+        /**
+         * EN : service definitions
+         * FR : définition des services et configuration de l'application
+         */
+        $this['root'] = dirname(__DIR__);
+        $this['temp'] = __DIR__ . "/../temp/";
+        if (getenv("environment") === "development") {
+            error_reporting(E_ALL);
+            $this["debug"] = TRUE;
+        }
+
+        $this['user_provider'] = $this->share(function (Application $app) {
+            return new EntityUserProvider($app["orm.manager_registry"], '\Mparaiso\Blog\Entity\User');
+        });
+        $this->register(new HttpCacheServiceProvider, array(
+            "http_cache.cache_dir" => $this['temp'] . "/cache/",
+        ));
+        $this->register(new TwigServiceProvider, array(
+            "twig.options" => array(
+                "cache" => $this["temp"] . "/twig/"
+            ),
+        ));
+        $this->register(new MonologServiceProvider, array(
+            "monolog.logfile" => $this['temp'] . "/" . date('Y-m-d') . ".text",
+        ));
+        $this->register(new ConsoleServiceProvider);
+        $this->register(new BlogServiceProvider);
+        $this->register(new FormServiceProvider);
+        $this->register(new ValidatorServiceProvider);
+        $this->register(new TranslationServiceProvider, array("locale_fallback" => "en"));
+        $this->register(new SessionServiceProvider);
+        $this->register(new UrlGeneratorServiceProvider);
+        $this->register(new DoctrineServiceProvider, array(
+            "db.options" => array(
+                "driver" => "pdo_sqlite",
+                "path"   => $this['root'] . "/db/blog.sqlite",
+            )
+        ));
+        $this->register(new DoctrineORMServiceProvider);
+        $this->register(new SecurityServiceProvider, array(
+            "security.firewalls"      => array(
+                "protected" => array(
+                    "anonymous" => TRUE,
+                    "pattern"   => "^/",
+                    "form"      => array(
+                        "login_path"          => "/login",
+                        "check_path"          => "/private/authenticate",
+                        "default_target_path" => "/private/profile"
+                    ),
+                    "logout"    => array(
+                        "logout_path" => "/admin/logout",
+                        "target"      => "/",
+                    ),
+                    "users"     => $this->share(function ($app) {
+                        return $app["user_provider"];
+                    })
+                )
+            ),
+            "security.role_hierarchy" => array("ROLE_USER" => array()),
+            "security.access_rules"   => array(
+                array("^/private", "ROLE_USER"),
+            )
+        ));
+        $this->register(new LightOpenIdServiceProvider);
+
+        /***
+         * Controllers
+         */
+        $this->match("/index", function (Request $req, Application $app) {
+            #@note @silex forward request
+            $sub = $req::create("/");
+            return $app->handle($sub, HttpKernelInterface::SUB_REQUEST);
+        });
+        $this->match("/private", function () {
+            return "this is a private area";
+        });
+        $this->match("/private/profile", function () {
+            return "your are logged in ! this is your private profile area";
+        });
+
+        $this->mount("/", $this["blog.default_controller"]);
+    }
+
 }
-$app->register(new HttpCacheServiceProvider, array(
-    "http_cache.cache_dir" => $app['temp'] . "/cache/",
-));
-$app->register(new TwigServiceProvider, array(
-    "twig.options" => array(
-        "cache" => $app["temp"] . "/twig/"
-    ),
-));
-$app->register(new MonologServiceProvider, array(
-    "monolog.logfile" => $app['temp'] . "/" . date('Y-m-d') . ".text",
-));
-$app->register(new ConsoleServiceProvider);
-$app->register(new BlogServiceProvider);
-$app->register(new FormServiceProvider);
-$app->register(new ValidatorServiceProvider);
-$app->register(new TranslationServiceProvider, array("locale_fallback" => "en"));
-$app->register(new SessionServiceProvider);
-$app->register(new UrlGeneratorServiceProvider);
-$app->register(new DoctrineServiceProvider, array(
-    "db.options" => array(
-        "driver" => "pdo_sqlite",
-        "path"   => $app['root'] . "/db/blog.sqlite",
-    )
-));
-$app->register(new DoctrineORMServiceProvider);
-/***
- * Controllers
- */
-$app->match("/index", function (Request $req, Application $app) {
-    #@note @silex forward request
-    $sub = $req::create("/");
-    return $app->handle($sub, HttpKernelInterface::SUB_REQUEST);
-});
 
-$app->mount("/", $app["blog.default_controller"]);
 
-return $app;

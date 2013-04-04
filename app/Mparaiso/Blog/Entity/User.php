@@ -3,50 +3,45 @@
 namespace Mparaiso\Blog\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User
- *
- * @ORM\Table(name="blog_users", indexes={@ORM\Index(name="name_index", columns={"nickname"})})
- * @ORM\Entity
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="nickname", type="string", length=100)
      */
-    private $nickname;
+    private $username;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=255)
+     */
+    private $password;
+
+    /**
+     * @var string
      */
     private $email;
 
     /**
+     * @var string
+     */
+    private $salt;
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\ManyToMany(targetEntity="Mparaiso\Blog\Entity\Role")
-     * @ORM\JoinTable(name="user_role",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="role_id", referencedColumnName="id", onDelete="CASCADE")
-     *   }
-     * )
+     */
+    private $posts;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
      */
     private $roles;
 
@@ -55,6 +50,7 @@ class User
      */
     public function __construct()
     {
+        $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
@@ -69,26 +65,49 @@ class User
     }
 
     /**
-     * Set nickname
+     * Set username
      *
-     * @param string $nickname
+     * @param string $username
      * @return User
      */
-    public function setNickname($nickname)
+    public function setUsername($username)
     {
-        $this->nickname = $nickname;
+        $this->username = $username;
     
         return $this;
     }
 
     /**
-     * Get nickname
+     * Get username
      *
      * @return string 
      */
-    public function getNickname()
+    public function getUsername()
     {
-        return $this->nickname;
+        return $this->username;
+    }
+
+    /**
+     * Set password
+     *
+     * @param string $password
+     * @return User
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    
+        return $this;
+    }
+
+    /**
+     * Get password
+     *
+     * @return string 
+     */
+    public function getPassword()
+    {
+        return $this->password;
     }
 
     /**
@@ -112,6 +131,62 @@ class User
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     * @return User
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+    
+        return $this;
+    }
+
+    /**
+     * Get salt
+     *
+     * @return string 
+     */
+    public function getSalt()
+    {
+        return $this->salt;
+    }
+
+    /**
+     * Add posts
+     *
+     * @param \Mparaiso\Blog\Entity\Post $posts
+     * @return User
+     */
+    public function addPost(\Mparaiso\Blog\Entity\Post $posts)
+    {
+        $this->posts[] = $posts;
+    
+        return $this;
+    }
+
+    /**
+     * Remove posts
+     *
+     * @param \Mparaiso\Blog\Entity\Post $posts
+     */
+    public function removePost(\Mparaiso\Blog\Entity\Post $posts)
+    {
+        $this->posts->removeElement($posts);
+    }
+
+    /**
+     * Get posts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPosts()
+    {
+        return $this->posts;
     }
 
     /**
@@ -146,44 +221,17 @@ class User
     {
         return $this->roles;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
-     * @ORM\OneToMany(targetEntity="Mparaiso\Blog\Entity\Post", mappedBy="user", cascade={"persist","merge"})
-     */
-    private $posts;
-
 
     /**
-     * Add posts
+     * Removes sensitive data from the user.
      *
-     * @param \Mparaiso\Blog\Entity\Post $posts
-     * @return User
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     *
+     * @return void
      */
-    public function addPost(\Mparaiso\Blog\Entity\Post $posts)
+    public function eraseCredentials()
     {
-        $this->posts[] = $posts;
-    
-        return $this;
-    }
-
-    /**
-     * Remove posts
-     *
-     * @param \Mparaiso\Blog\Entity\Post $posts
-     */
-    public function removePost(\Mparaiso\Blog\Entity\Post $posts)
-    {
-        $this->posts->removeElement($posts);
-    }
-
-    /**
-     * Get posts
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getPosts()
-    {
-        return $this->posts;
+        // TODO: Implement eraseCredentials() method.
     }
 }

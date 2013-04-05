@@ -1,0 +1,42 @@
+<html>
+<head>
+    {% if title is defined %}
+        <title>{{ title }} - microblog</title>
+    {% else %}
+        <title>Welcome to microblog</title>
+    {% endif %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ app.request.baseUrl }}/vendor/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ app.request.baseUrl }}/css/style.css">
+
+    {% endblock %}
+</head>
+<body>
+{% block header %}
+    <div class="navbar navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="{{ app.request.baseUrl }}/">Microblog</a>
+                <ul class="nav">
+                    {% if app.security.isGranted("ROLE_USER") %}
+                        <li><a href="{{ path("private_profile") }}">Welcome {{ app.security.token.user.userName }}</a>
+                        </li>
+                        <li><a href="{{ path("private_logout") }}">Logout</a></li>{% else %}
+                        <li><a href="{{ path("login") }}">login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+<div class="container">
+    {% block flash %}
+        {% include "common/flash.html.twig" %}
+    {% endblock %}
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>

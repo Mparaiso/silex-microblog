@@ -1,0 +1,16 @@
+# Entity.Role.dcm.yml
+Entity\Role:
+  type: entity
+  table: blog_roles
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    name:
+      type: string
+      length: 50
+    role:
+      type: string
+      length: 200

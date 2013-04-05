@@ -1,0 +1,37 @@
+# Entity.User.dcm.yml
+Entity\User:
+  type: entity
+  table: blog_users
+  indexes:
+    user_nickname_index:
+      columns: [ username ]
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    username:
+      type: string
+      length: 100
+    password:
+      type: string
+      length: 100
+    email:
+      type: string
+      length: 255
+    salt:
+      type: string
+      length: 255
+  oneToMany:
+    posts:
+      targetEntity: Entity\Post
+      mappedBy: user
+      cascade: ["persist","merge"]
+  manyToMany:
+    roles:
+      targetEntity: Entity\Role
+#      inversedBy: users
+      #joinTable: blog_users_roles
+
+

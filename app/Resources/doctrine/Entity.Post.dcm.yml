@@ -1,0 +1,29 @@
+# Entity.Post.dcm.yml
+Entity\Post:
+  type: entity
+  table: blog_posts
+  indexes:
+    post_title_index:
+      columns: [ title ]
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    title:
+      type: string
+      length: 255
+    body:
+      type: text
+    created_at:
+      type: datetime
+    updated_at:
+      type: datetime
+
+  manyToOne:
+    user:
+      targetEntity: Entity\User
+      inversedBy: posts
+      cascade: ["persist","merge"]
+

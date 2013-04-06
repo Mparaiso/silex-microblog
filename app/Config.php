@@ -21,10 +21,16 @@ use Silex\Application;
 use Service\AccountService;
 
 
+/**
+ * FR : Configuration de l'application
+ */
 class Config implements ServiceProviderInterface
 {
 
-
+    /**
+     * 
+     * @{inherit doc}
+     */
     public function register(Application $app)
     {
         /**
@@ -88,7 +94,9 @@ class Config implements ServiceProviderInterface
                 "dbname"=>getenv("BLOG_DBNAME"),
                 "password"=>getenv("BLOG_PASSWORD"),               
                 "user"=>getenv("BLOG_USER"),
-                "host"=>getenv("BLOG_HOST")
+                "host"=>getenv("BLOG_HOST"),
+                "path"=>getenv("BLOG_PATH"),
+                "memory"=>getenv("BLOG_MEMORY")
             )
         ));
         $app->register(new DoctrineORMServiceProvider, array(

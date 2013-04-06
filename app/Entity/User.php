@@ -9,8 +9,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * User
  */
-class User implements UserInterface, Serializable
-{
+class User implements UserInterface, Serializable {
+
     /**
      * @var integer
      */
@@ -29,11 +29,6 @@ class User implements UserInterface, Serializable
     /**
      * @var string
      */
-    private $email;
-
-    /**
-     * @var string
-     */
     private $salt;
 
     /**
@@ -45,12 +40,21 @@ class User implements UserInterface, Serializable
      * @var \Doctrine\Common\Collections\Collection
      */
     private $roles;
+    /**
+     *
+     * @var \Datetime
+     */
+    private $created_at;
+    /**
+     *
+     * @var \Datetime
+     */
+    private $updated_at;
 
     /**
      * Constructor
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
     }
@@ -60,8 +64,7 @@ class User implements UserInterface, Serializable
      *
      * @return integer
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -71,8 +74,7 @@ class User implements UserInterface, Serializable
      * @param string $username
      * @return User
      */
-    public function setUsername($username)
-    {
+    public function setUsername($username) {
         $this->username = $username;
 
         return $this;
@@ -83,8 +85,7 @@ class User implements UserInterface, Serializable
      *
      * @return string
      */
-    public function getUsername()
-    {
+    public function getUsername() {
         return $this->username;
     }
 
@@ -94,8 +95,7 @@ class User implements UserInterface, Serializable
      * @param string $password
      * @return User
      */
-    public function setPassword($password)
-    {
+    public function setPassword($password) {
         $this->password = $password;
 
         return $this;
@@ -106,32 +106,8 @@ class User implements UserInterface, Serializable
      *
      * @return string
      */
-    public function getPassword()
-    {
+    public function getPassword() {
         return $this->password;
-    }
-
-    /**
-     * Set email
-     *
-     * @param string $email
-     * @return User
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * Get email
-     *
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email;
     }
 
     /**
@@ -140,8 +116,7 @@ class User implements UserInterface, Serializable
      * @param string $salt
      * @return User
      */
-    public function setSalt($salt)
-    {
+    public function setSalt($salt) {
         $this->salt = $salt;
 
         return $this;
@@ -152,8 +127,7 @@ class User implements UserInterface, Serializable
      *
      * @return string
      */
-    public function getSalt()
-    {
+    public function getSalt() {
         return $this->salt;
     }
 
@@ -163,8 +137,7 @@ class User implements UserInterface, Serializable
      * @param \Entity\Post $posts
      * @return User
      */
-    public function addPost(\Entity\Post $posts)
-    {
+    public function addPost(\Entity\Post $posts) {
         $this->posts[] = $posts;
 
         return $this;
@@ -175,8 +148,7 @@ class User implements UserInterface, Serializable
      *
      * @param \Entity\Post $posts
      */
-    public function removePost(\Entity\Post $posts)
-    {
+    public function removePost(\Entity\Post $posts) {
         $this->posts->removeElement($posts);
     }
 
@@ -185,8 +157,7 @@ class User implements UserInterface, Serializable
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getPosts()
-    {
+    public function getPosts() {
         return $this->posts;
     }
 
@@ -196,8 +167,7 @@ class User implements UserInterface, Serializable
      * @param \Entity\Role $roles
      * @return User
      */
-    public function addRole(\Entity\Role $roles)
-    {
+    public function addRole(\Entity\Role $roles) {
         $this->roles[] = $roles;
 
         return $this;
@@ -208,8 +178,7 @@ class User implements UserInterface, Serializable
      *
      * @param \Entity\Role $roles
      */
-    public function removeRole(\Entity\Role $roles)
-    {
+    public function removeRole(\Entity\Role $roles) {
         $this->roles->removeElement($roles);
     }
 
@@ -218,9 +187,24 @@ class User implements UserInterface, Serializable
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getRoles()
-    {
+    public function getRoles() {
         return $this->roles->toArray();
+    }
+
+    public function setCreatedAt($createdAt) {
+        $this->created_at = $createdAt;
+    }
+
+    public function getCreatedAt() {
+        return $this->created_at;
+    }
+
+    public function setUpdatedAt($updatedAt) {
+        $this->updated_at = $updatedAt;
+    }
+
+    public function getUpdatedAt() {
+        return $this->updated_at;
     }
 
     /**
@@ -231,21 +215,18 @@ class User implements UserInterface, Serializable
      *
      * @return void
      */
-    public function eraseCredentials()
-    {
+    public function eraseCredentials() {
         // TODO: Implement eraseCredentials() method.
     }
 
-    public function __toString()
-    {
-        return $this->email;
+    public function __toString() {
+        return $this->username;
     }
 
     /**
      * @see \Serializable::serialize()
      */
-    public function serialize()
-    {
+    public function serialize() {
         return serialize(array(
             $this->id,
         ));
@@ -254,11 +235,10 @@ class User implements UserInterface, Serializable
     /**
      * @see \Serializable::unserialize()
      */
-    public function unserialize($serialized)
-    {
+    public function unserialize($serialized) {
         list (
-            $this->id,
-            ) = unserialize($serialized);
+                $this->id,
+                ) = unserialize($serialized);
     }
 
 }

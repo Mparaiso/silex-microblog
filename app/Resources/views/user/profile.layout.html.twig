@@ -1,0 +1,17 @@
+{% extends "common/layout.html.twig" %}
+{% block content %}
+<h5>User profile</h5>
+<div class="row">
+    <div class="span4">
+        <p><img src="{{ account.email|gravatar(128) }}" alt=""></p>
+
+        <p>Nickname : {{ account.username }}</p>
+        <p>Last Seen : {{ account.updatedAt|date('Y-m-d') }}</p>
+        <p class="muted italic"><i> &OpenCurlyDoubleQuote; {{account.bio}} &CloseCurlyDoubleQuote; </i></p>
+        {% if account.user == app.security.token.user %}
+        <p><a href='{{path("profile_edit")}}'>edit account</a> </p>
+        {% endif %}
+    </div>
+        {% block subcontent %}
+        {% endblock %}
+{% endblock %}

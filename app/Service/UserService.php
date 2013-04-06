@@ -25,4 +25,15 @@ class UserService
         $this->em->flush();
         return $user;
     }
+
+    /**
+     * Finds a single entity by a set of criteria.
+     * @param array $criteria
+     * @return \Entity\User
+     */
+    function findOneBy(array $criteria)
+    {
+        return $this->em->getRepository('Entity\User')->findOneBy($criteria);
+    }
+
 }

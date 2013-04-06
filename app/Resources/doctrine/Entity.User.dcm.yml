@@ -14,15 +14,17 @@ Entity\User:
     username:
       type: string
       length: 100
+      unique: true
     password:
       type: string
       length: 100
-    email:
-      type: string
-      length: 255
     salt:
       type: string
       length: 255
+    created_at:
+      type: datetime
+    updated_at:
+      type: datetime
   oneToMany:
     posts:
       targetEntity: Entity\Post

@@ -1,5 +1,6 @@
 <?php
 use Silex\ServiceProviderInterface;
+use Service\PostService;
 use Service\UserService;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\TwigServiceProvider;
@@ -17,6 +18,7 @@ use Silex\Provider\ServiceControllerServiceProvider;
 use Controller\DefaultController;
 use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Silex\Application;
+use Service\AccountService;
 
 
 class Config implements ServiceProviderInterface
@@ -40,15 +42,23 @@ class Config implements ServiceProviderInterface
             array('name' => 'Flickr', 'url' => 'http://www.flickr.com/<add your flickr username here>'),
             array('name' => 'MyOpenID', 'url' => 'https://www.myopenid.com'),
             array("name" => "Wordpress", 'url' => "http://<add your wordpress username here>.wordpress.com/"),
+            array("name" => "Blogger", 'url' => "http://<add your blog name here>.blogspot.com/"),
         );
         /* user provider for security */
         $app['user_provider'] = $app->share(function (Application $app) {
-            return new EntityUserProvider($app["orm.manager_registry"], '\Entity\User', "email");
+            return new EntityUserProvider($app["orm.manager_registry"], '\Entity\User', "username");
         });
         /* user service */
         $app["user_service"] = $app->share(function ($app) {
             return new UserService($app["orm.em"]);
         });
+        $app["post_service"] = $app->share(function ($app) {
+            return new PostService($app["orm.em"]);
+        });
+        $app["account_service"]=$app->share(function($app){
+            return new AccountService($app['orm.em']);
+        });
+        
         /* default controller */
         $app["default_controller"] = $app->share(function (Application $app) {
             return new DefaultController();
@@ -60,7 +70,7 @@ class Config implements ServiceProviderInterface
         $app->register(new TwigServiceProvider, array(
             "twig.path"    => array(__DIR__ . "/Resources/views/"),
             "twig.options" => array(
-                "cache" =>  $app["temp"] . "/twig/",
+                "cache" => $app["temp"] . "/twig/",
             ),
         ));
         $app->register(new MonologServiceProvider, array(
@@ -74,8 +84,11 @@ class Config implements ServiceProviderInterface
         $app->register(new UrlGeneratorServiceProvider);
         $app->register(new DoctrineServiceProvider, array(
             "db.options" => array(
-                "driver" => "pdo_sqlite",
-                "path"   => $app['root'] . "/db/blog.sqlite",
+                "driver" => "pdo_mysql",
+                "dbname"=>getenv("BLOG_DBNAME"),
+                "password"=>getenv("BLOG_PASSWORD"),               
+                "user"=>getenv("BLOG_USER"),
+                "host"=>getenv("BLOG_HOST")
             )
         ));
         $app->register(new DoctrineORMServiceProvider, array(
@@ -123,8 +136,14 @@ class Config implements ServiceProviderInterface
 
     public function boot(Application $app)
     {
+        /* @note @silex FR : ajouter des filtres à Twig
+         * EN : add filters to twig
+         */
         $app["twig"] = $app->share($app->extend("twig", function ($twig, $app) {
             $twig->addFilter("md5", new Twig_Filter_Function("md5"));
+            $twig->addFilter("gravatar", new Twig_Filter_Function(function ($email, $size = 128) {
+                return "http://www.gravatar.com/avatar/" . md5($email) . "?d=mm&s=$size";
+            }));
             return $twig;
         }));
     }

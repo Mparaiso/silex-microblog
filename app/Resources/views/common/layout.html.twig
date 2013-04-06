@@ -19,7 +19,8 @@
                 <a class="brand" href="{{ app.request.baseUrl }}/">Microblog</a>
                 <ul class="nav">
                     {% if app.security.isGranted("ROLE_USER") %}
-                        <li><a href="{{ path("private_profile") }}">Welcome {{ app.security.token.user.userName }}</a>
+                        {% set user_account = app.account_service.findOneBy({user:app.security.token.user})%}
+                        <li><a href="{{ path("public_profile",{username:user_account.username|url_encode}) }}">Welcome {{ user_account.username }}</a>
                         </li>
                         <li><a href="{{ path("private_logout") }}">Logout</a></li>{% else %}
                         <li><a href="{{ path("login") }}">login</a></li>

@@ -1,0 +1,15 @@
+{% extends "user/profile.layout.html.twig" %}
+{% block subcontent %}
+<div class="span8">
+        {% if posts|length > 0 %}
+        <ul>
+            {% for post in posts %}
+                <li>{%  include "blog/include/post.html.twig" with {post:post} only %}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <h4>{{ account.username }} has no post yet.</h4>
+            {% endif %}
+            </div>
+        </div>
+{% endblock %}

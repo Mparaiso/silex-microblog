@@ -3,6 +3,7 @@
 namespace Mparaiso\Blog\Controller;
 
 use Silex\WebTestCase;
+use Controller\DefaultController;
 
 class DefaultControllerTest extends WebTestCase{
     /**

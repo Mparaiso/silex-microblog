@@ -1,0 +1,56 @@
+# Entity\Account.dcm.yml
+Entity\Account:
+  type: entity
+  table: blog_accounts
+  id:
+    id:
+      type: integer
+      generator:
+        strategy: AUTO
+  fields:
+    username:
+      type: string
+      length: 255
+      unique: true
+    email:
+      type: string
+      length: 255
+      unique: true
+      nullable: true
+    bio:
+      type: string
+      lenght: 255
+      nullable: true
+    last_login:
+      type: datetime
+      nullable: true
+    created_at:
+      type: datetime
+    updated_at:
+      type: datetime
+  oneToOne:
+    user:
+      targetEntity: Entity\User
+      cascade: ["all"]
+#      joinColumn:
+#        name: user_id
+#        referencedColumnName: id
+#  oneToMany:
+#    phonenumbers:
+#      targetEntity: Phonenumber
+#      mappedBy: user
+#      cascade: ["persist", "merge"]
+#  manyToMany:
+#    groups:
+#      targetEntity: Group
+#      joinTable:
+#        name: cms_users_groups
+#        joinColumns:
+#          user_id:
+#            referencedColumnName: id
+#        inverseJoinColumns:
+#          group_id:
+#            referencedColumnName: id
+#  lifecycleCallbacks:
+#    prePersist: [ doStuffOnPrePersist, doOtherStuffOnPrePersistToo ]
+#    postPersist: [ doStuffOnPostPersist ]

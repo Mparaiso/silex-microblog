@@ -1,0 +1,12 @@
+{% extends "user/profile.layout.html.twig" %}
+{% block subcontent %}
+<div class="span8">
+    <div class='row'>
+        <h5>Edit account infos</h5>
+        <form name="{{form.vars.name}}" method="POST">
+        {{ form_widget(form)}}
+                <input type="submit" value="submit">
+            </form>
+        </div>
+    </div>
+{% endblock %}

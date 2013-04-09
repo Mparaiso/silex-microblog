@@ -1,43 +1,49 @@
 <html>
-<head>
+    <head>
     {% if title is defined %}
-        <title>{{ title }} - microblog</title>
+            <title>{{ title }} - microblog</title>
     {% else %}
-        <title>Welcome to microblog</title>
+            <title>Welcome to microblog</title>
     {% endif %}
     {% block stylesheets %}
-        <link rel="stylesheet" href="{{ app.request.baseUrl }}/vendor/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="{{ app.request.baseUrl }}/css/style.css">
+            <link rel="stylesheet" href="{{ app.request.baseUrl }}/vendor/bootstrap/css/bootstrap.min.css">
+            <link rel="stylesheet" href="{{ app.request.baseUrl }}/css/style.css">
 
     {% endblock %}
-</head>
-<body>
+        </head>
+        <body>
 {% block header %}
-    <div class="navbar navbar-inverse">
-        <div class="navbar-inner">
-            <div class="container">
-                <a class="brand" href="{{ app.request.baseUrl }}/">Microblog</a>
-                <ul class="nav">
+                <div class="navbar navbar-inverse">
+                    <div class="navbar-inner">
+                        <div class="container">
+                            <a class="brand" href="{{ app.request.baseUrl }}/">Microblog</a>
+                            <ul class="nav">
                     {% if app.security.isGranted("ROLE_USER") %}
-                        {% set user_account = app.account_service.findOneBy({user:app.security.token.user})%}
-                        <li><a href="{{ path("public_profile",{username:user_account.username|url_encode}) }}">Welcome {{ user_account.username }}</a>
-                        </li>
-                        <li><a href="{{ path("private_logout") }}">Logout</a></li>{% else %}
-                        <li><a href="{{ path("login") }}">login</a></li>
+                                    <li>
+                                        <a href="{{ path("public_profile",{username:app.current_account.username|url_encode}) }}">
+                                            Welcome {{ app.current_account.username }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ path("private_logout") }}">Logout</a></li>{% else %}
+                                    <li>
+                                        <a href="{{ path("login") }}">login</a></li>
                     {% endif %}
-                </ul>
-            </div>
-        </div>
-    </div>
+                                </ul>
+                                {% include 'common/search.html.twig' %}
+                            </div>
+                        </div>
+                    </div>
 
 {% endblock %}
 
-<div class="container">
+                    <div class="container">
+    {% block subtitle%}<h5> Welcome to microblog </h5>{%endblock%}                        
     {% block flash %}
         {% include "common/flash.html.twig" %}
     {% endblock %}
     {% block content %}
     {% endblock %}
-</div>
-</body>
-</html>
+                        </div>
+                    </body>
+                </html>

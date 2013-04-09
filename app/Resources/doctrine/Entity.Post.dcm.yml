@@ -14,6 +14,7 @@ Entity\Post:
     title:
       type: string
       length: 255
+      nullable: true
     body:
       type: text
     created_at:
@@ -22,8 +23,8 @@ Entity\Post:
       type: datetime
 
   manyToOne:
-    user:
-      targetEntity: Entity\User
+    account:
+      targetEntity: Entity\Account
       inversedBy: posts
-      cascade: ["persist","merge"]
+      cascade: ["all"]
 

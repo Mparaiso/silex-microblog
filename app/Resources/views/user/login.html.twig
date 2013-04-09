@@ -1,7 +1,7 @@
 {% extends 'common/layout.html.twig' %}
 {% block content %}
     <h1>Sign in</h1>
-    <form action="" method="POST" name="{{form.vars.name}}">
+    <form action="" id="login" method="POST" name="{{form.vars.name}}">
         <p>
             {# @note @silex afficher un champ de formulaire #}
             {{ form_row(form.openid,{label:"Please enter your OpenID, or select one of the providers below:",attr:{class:"span6"}})}}
@@ -17,7 +17,7 @@
     </p>
     </form>
     <script type="text/javascript">
-        var form = document.forms[0];
+        var form = document.getElementById("login");
         form.addEventListener("click",function(event){
             var el = event.target;
             var targetInput = document.getElementsByName('login[openid]').item(0);

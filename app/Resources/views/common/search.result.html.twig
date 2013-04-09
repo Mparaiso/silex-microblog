@@ -1,0 +1,12 @@
+{% extends 'user/profile.layout.html.twig'%}
+{% block subcontent %}
+{% if results > 0 %}
+<h5>Search results for <i>&ldquo;{{ query|default('') }}&rdquo;</i></h5>
+
+    {% for result in results %}
+        {% include 'blog/include/post.html.twig' with {post:result} only %}
+    {% endfor %}
+{% else %}
+<h5>no result for search {{ query|default('') }}</h5>
+{% endif %}
+{% endblock %}

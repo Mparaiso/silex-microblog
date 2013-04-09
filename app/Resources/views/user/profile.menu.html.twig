@@ -1,0 +1,6 @@
+<li>
+    <a href="{{ path("public_profile",{account.username|url_encode}) }}">
+        Welcome {{account.username }}
+    </a>
+</li>
+<li><a href="{{ path("private_logout") }}">Logout</a></li>

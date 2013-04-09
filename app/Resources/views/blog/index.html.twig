@@ -1,10 +1,20 @@
-{% extends 'common/layout.html.twig' %}
-{% block content %}
-    <div class="row">
+{% extends 'user/profile.layout.html.twig' %}
+{% block subcontent %}
+<div class="span8">
+    {% if app.security.isGranted("IS_AUTHENTICATED_FULLY") %}
+        {{render(path("profile_addpost")) }}
+    {%endif%}
+        {% if posts|length > 0 %}
+        <div class="unstyled">
         {% for post in posts %}
-            <div class="span12">
-                {{ post.author.nickname }} wrote : <b>{{ post.body }}</b></div>
-        {% endfor %}
-
-    </div>
+                <div>{% include 'blog/include/post.html.twig' with {post:post} only %}</div>
+                <div>&nbsp;</div>
+                {% endfor %}
+            </div>
+            <div >{% include 'blog/include/pagination.html.twig' with {items:posts|length} %}
+            </div>
+        {% else %}
+            <h5>No messages yet !</h5>
+        {% endif %}
+        </div>
 {% endblock %}

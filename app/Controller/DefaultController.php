@@ -2,37 +2,91 @@
 
 namespace Controller;
 
+use Entity\Account;
+use Entity\Post;
+use Entity\Search;
+use Entity\User;
+use Form\AccountType;
+use Form\LoginType;
+use Form\PostSearchType;
+use Form\PostType;
+use LightOpenID;
+use Silex\Application;
+use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
+use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Entity\User;
-use Entity\Account;
-use Form\LoginType;
-use Symfony\Component\HttpFoundation\Request;
-use Silex\Application;
+use Symfony\Component\Security\Core\SecurityContext;
 
+/**
+ * EN : Application controllers <br/>
+ * FR : controleur de l'application
+ */
 class DefaultController implements ControllerProviderInterface {
 
-    function index(Application $app) {
-        //$user  = array("nickname" => "John doe");
-        $posts = array(
-            array(
-                "author" => array("nickname" => "Jesus Christ"),
-                "body" => "The holy bible"
-            ),
-            array(
-                "author" => array("nickname" => "Stan Lee"),
-                "body" => "The amazing spiderman",
-            )
-        );
+    /**
+     * EN : display post search resutls <br/>
+     * FR : affiche  les résultats d'une recherche <br/>
+     * @param \Symfony\Component\HttpFoundation\Request $req
+     * @param \Silex\Application $app
+     * @return string
+     */
+    function search(Request $req, Application $app) {
+        $query = $req->query->get("q");
+        $results = array();
+        if ($query != null) {
+            $search = new Search();
+            $search->setExpression($query);
+            $results = $app['post_service']->search($search);
+        }
+        return $app['twig']->render('common/search.result.html.twig', array(
+                    "query" => $query,
+                    "results" => $results,
+        ));
+    }
+
+    function profileAddPost(Request $request, Application $app) {
+        if ($app["security"]->isGranted("IS_AUTHENTICATED_FULLY")) {
+            $redirect = $request->headers->get('referer');
+            $post = new Post();
+            $post->setAccount($app['current_account']);
+            $form = $app["form.factory"]->create(new PostType, $post);
+            /* @var $form Form */
+            if ("POST" === $request->getMethod()) {
+                $form->bind($request);
+                if ($form->isValid()) {
+                    $app["post_service"]->save($post);
+                    $app["session"]->getFlashBag()->add("success", "Post created successfully");
+                } else {
+                    $app["session"]->getFlashBag()->add("error", $form->getErrorsAsString());
+                }
+                return $app->redirect($redirect);
+            }
+            return $app["twig"]->render("user/profile.addPost.html.twig", array(
+                        "form" => $form->createView(),
+            ));
+        } else {
+            return "";
+        }
+    }
+
+    function index(Request $request, Application $app) {
+        $limit = $request->query->get('limit', 10);
+        $offset = $request->query->get('offset', 0);
+        $posts = $app["post_service"]->findBy(array(), array(
+            "created_at" => "DESC"), $limit, $offset * $limit);
         return $app["twig"]->render("blog/index.html.twig", array(
-                    "posts" => $posts
+                    "posts" => $posts,
+                    "offset" => $offset,
+                    "limit" => $limit
         ));
     }
 
     function afterlogin(Request $req, Application $app) {
-        /* @var $openid \LightOpenID */
-        $openid = new \LightOpenID("localhost");
+        /* @var $openid LightOpenID */
+        $openid = new LightOpenID("localhost");
         if ($openid->mode == "cancel") {
             $app->abort(500, 'User has canceled authentication!');
         } else {
@@ -75,14 +129,14 @@ class DefaultController implements ControllerProviderInterface {
     }
 
     function login(Request $req, Application $app) {
-        /* @var $form Form */
+        /* @var $form Form2 */
         $form = $app['form.factory']->create(new LoginType);
         if ("POST" == $req->getMethod()) {
             $form->bind($req);
             if ($form->isValid()) {
                 $datas = $form->getData();
-                /* @var $openid \LightOpenID */
-                $openid = new \LightOpenID("localhost");
+                /* @var $openid LightOpenID */
+                $openid = new LightOpenID("localhost");
                 // set the return url
                 $openid->returnUrl = $app["url_generator"]->generate("afterlogin", array(), TRUE);
                 if (!$openid->mode) {
@@ -102,56 +156,93 @@ class DefaultController implements ControllerProviderInterface {
     }
 
     function profileIndex(Request $req, Application $app, $username = NULL) {
-        $account = $app["account_service"]->findOneBy(array("username" => $username));
+        $offset = intval($req->query->get('offset', 0));
+        $limit = intval($req->query->get('limit', 10));
+        $account = $app["account_service"]->findOneBy(array(
+            "username" => $username));
         if ($account == NULL) {
             $app["session"]->getFlashBag()->add("error", "Account with username $username not found !");
             return $app->redirect($app["url_generator"]->generate("index"));
-        } else {
-            $posts = $app["post_service"]->findBy(array("user" => $account->getUser()));
-            return $app["twig"]->render("user/profile.index.html.twig", 
-                    array("account" => $account, "posts" => $posts));
         }
+        $posts = $app["post_service"]->findBy(array("account" => $account), array(
+            "created_at" => "DESC"), $limit, $offset * $limit);
+        return $app["twig"]->render("user/profile.index.html.twig", array(
+                    "offset" => $offset,
+                    "limit" => $limit,
+                    "account" => $account, "posts" => $posts));
     }
 
     function profileEdit(Request $req, Application $app) {
         $user = $app["security"]->getToken()->getUser();
         $account = $app["account_service"]->findOneBy(array("user" => $user));
+        $_account = clone($account);
         if ($account == null) {
             return $app->redirect("/");
         }
-        $form = $app["form.factory"]->create(new \Form\AccountType(), $account);
+        $form = $app["form.factory"]->create(new AccountType(), $account);
         if ("POST" === $req->getMethod()) {
+            #$app['orm.em']->detach($account); /* fixing a bug @TODO fix is properly */
             $form->bind($req);
             if ($form->isValid()) {
                 $app["account_service"]->save($account);
                 $app["session"]->getFlashBag()->add("success", "Account info updated!");
                 return $app->redirect(
-                                $app["url_generator"]->generate('public_profile', 
-                                        array("username" => $account->getUsername())));
+                                $app["url_generator"]->generate('public_profile', array(
+                                    "username" => $account->getUsername())));
             }
         }
-        return $app["twig"]->render("user/profile.edit.html.twig", 
-                array("account" => $account, "form" => $form->createView()));
+        return $app["twig"]->render("user/profile.edit.html.twig", array(
+                    "account" => $_account, "form" => $form->createView()));
+    }
+
+    function profileMenu(Application $app) {
+        $user = $app["security"]->getToken()->getUser();
+        $account = $app["account_service"]->findOneBy(array("user" => $user));
+        return $app['twig']->render('user/profile.menu.htmh.twig', array(
+                    'account' => clone($account)
+        ));
     }
 
     /**
      * {@inheritdoc}
      */
     public function connect(Application $app) {
-        /* @var $controllers \Silex\ControllerCollection */
+        /* @var $controllers ControllerCollection */
         $controllers = $app['controllers_factory'];
         $controllers->match("/", array($this, "index"))
                 ->bind("index");
         $controllers->match("/login", array($this, "login"))
+                ->before(array($this, "mustBeAnonymous"))
                 ->bind("login");
         $controllers->match("/afterlogin", array($this, "afterlogin"))
+                ->before(array($this, "mustBeAnonymous"))
                 ->bind("afterlogin");
         $controllers->match("/private/profile/edit", array($this, "profileEdit"))
                 ->bind("profile_edit");
+        $controllers->match("/private/profile/menu", array($this, "profileMenu"))
+                ->bind("profile_menu");
         $controllers->match("/user/{username}", array($this, "profileIndex"))
                 ->bind("public_profile");
-
+        $controllers->match("/private/profile/addpost", array($this, "profileAddPost"))
+                ->bind("profile_addpost");
+        $controllers->match('/search', array($this, "search"))
+                ->bind("search");
         return $controllers;
+    }
+
+    /**
+     * FR: si l'utilisateur est autentifié , rediriger vers son profile
+     * @param Request $req
+     * @param Application $app
+     * @return type
+     */
+    function mustBeAnonymous(Request $req, Application $app) {
+        $ctx = $app["security"];
+        /* @var $ctx SecurityContext */
+        if ($ctx->isGranted("IS_AUTHENTICATED_FULLY")) {
+            $account = $app["account_service"]->findOneBy(array("user" => $ctx->getToken()->getUser()));
+            return $app->redirect($app["url_generator"]->generate("public_profile", array("username" => $account->getUsername())));
+        }
     }
 
 }

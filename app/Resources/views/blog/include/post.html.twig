@@ -1,1 +1,11 @@
-<img src="{{ post.user.email|gravatar(50) }}" alt=""> says : <a href="#">{{ post.title }}</a>
+<div class="row">
+    <span class='span1'>
+        <a href="{{path('public_profile',{username:post.account.username} )}}"><img src="{{ post.account.email|gravatar(50) }}" alt="avatar"></a>
+    </span>  
+    <span class='span5'>
+        <div style='font-size:75%'>{{post.account.username}}</div>
+        <small class='muted'>{{ post.createdAt|date('Y:m:d h:i')}} </small><br/>
+        <span class="text-info">{{ post.body }}</span>
+
+    </span>
+</div>

@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Post
  */
-class Post
-{
+class Post {
+
     /**
      * @var integer
      */
@@ -35,18 +35,11 @@ class Post
     private $updated_at;
 
     /**
-     * @var \Entity\User
-     */
-    private $user;
-
-
-    /**
      * Get id
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -56,10 +49,9 @@ class Post
      * @param string $title
      * @return Post
      */
-    public function setTitle($title)
-    {
+    public function setTitle($title) {
         $this->title = $title;
-    
+
         return $this;
     }
 
@@ -68,8 +60,7 @@ class Post
      *
      * @return string 
      */
-    public function getTitle()
-    {
+    public function getTitle() {
         return $this->title;
     }
 
@@ -79,10 +70,9 @@ class Post
      * @param string $body
      * @return Post
      */
-    public function setBody($body)
-    {
+    public function setBody($body) {
         $this->body = $body;
-    
+
         return $this;
     }
 
@@ -91,8 +81,7 @@ class Post
      *
      * @return string 
      */
-    public function getBody()
-    {
+    public function getBody() {
         return $this->body;
     }
 
@@ -102,10 +91,9 @@ class Post
      * @param \DateTime $createdAt
      * @return Post
      */
-    public function setCreatedAt($createdAt)
-    {
+    public function setCreatedAt($createdAt) {
         $this->created_at = $createdAt;
-    
+
         return $this;
     }
 
@@ -114,8 +102,7 @@ class Post
      *
      * @return \DateTime 
      */
-    public function getCreatedAt()
-    {
+    public function getCreatedAt() {
         return $this->created_at;
     }
 
@@ -125,10 +112,9 @@ class Post
      * @param \DateTime $updatedAt
      * @return Post
      */
-    public function setUpdatedAt($updatedAt)
-    {
+    public function setUpdatedAt($updatedAt) {
         $this->updated_at = $updatedAt;
-    
+
         return $this;
     }
 
@@ -137,31 +123,34 @@ class Post
      *
      * @return \DateTime 
      */
-    public function getUpdatedAt()
-    {
+    public function getUpdatedAt() {
         return $this->updated_at;
     }
 
     /**
-     * Set user
+     * @var \Entity\Account
+     */
+    private $account;
+
+    /**
+     * Set account
      *
-     * @param \Entity\User $user
+     * @param \Entity\Account $account
      * @return Post
      */
-    public function setUser(\Entity\User $user = null)
-    {
-        $this->user = $user;
-    
+    public function setAccount(\Entity\Account $account = null) {
+        $this->account = $account;
+
         return $this;
     }
 
     /**
-     * Get user
+     * Get account
      *
-     * @return \Entity\User 
+     * @return \Entity\Account 
      */
-    public function getUser()
-    {
-        return $this->user;
+    public function getAccount() {
+        return $this->account;
     }
+
 }

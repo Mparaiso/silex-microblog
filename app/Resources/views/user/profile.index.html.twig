@@ -1,12 +1,20 @@
 {% extends "user/profile.layout.html.twig" %}
+{% block subtitle %} <h5>User profile</h5>{% endblock %}
 {% block subcontent %}
 <div class="span8">
+        {% if app.security.isGranted('IS_AUTHENTICATED_FULLY') %}
+        <div>{{ render(path('profile_addpost')) }}</div>
+        {% endif %}
         {% if posts|length > 0 %}
-        <ul>
+        <div>
             {% for post in posts %}
-                <li>{%  include "blog/include/post.html.twig" with {post:post} only %}</li>
+                <div>{%  include "blog/include/post.html.twig" with {post:post} only %}</div>
+                <div>&nbsp;</div>
                     {% endfor %}
-                </ul>
+            </div>
+            <div>
+            {% include 'blog/include/pagination.html.twig' with {items:posts|length} %}
+                </div>
             {% else %}
                 <h4>{{ account.username }} has no post yet.</h4>
             {% endif %}

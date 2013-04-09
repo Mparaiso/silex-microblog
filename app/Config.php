@@ -1,4 +1,5 @@
 <?php
+
 use Silex\ServiceProviderInterface;
 use Service\PostService;
 use Service\UserService;
@@ -19,27 +20,27 @@ use Controller\DefaultController;
 use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Silex\Application;
 use Service\AccountService;
-
+use Doctrine\Common\Cache\FileSystemCache;
 
 /**
  * FR : Configuration de l'application
  */
-class Config implements ServiceProviderInterface
-{
+class Config implements ServiceProviderInterface {
 
     /**
      * 
      * @{inherit doc}
      */
-    public function register(Application $app)
-    {
+    public function register(Application $app) {
         /**
          * EN : service definitions
          * FR : définition des services et configuration de l'application
          */
         $app['root'] = dirname(__DIR__);
         $app['temp'] = __DIR__ . "/../temp/";
-
+        $app['config'] = array(
+            "MAX_SEARCH_RESULTS" => 50,
+        );
         // local services
         $app["openid_providers"] = array(
             array('name' => 'Google', 'url' => 'https://www.google.com/accounts/o8/id'),
@@ -52,29 +53,36 @@ class Config implements ServiceProviderInterface
         );
         /* user provider for security */
         $app['user_provider'] = $app->share(function (Application $app) {
-            return new EntityUserProvider($app["orm.manager_registry"], '\Entity\User', "username");
-        });
+                    return new EntityUserProvider($app["orm.manager_registry"], '\Entity\User', "username");
+                });
         /* user service */
         $app["user_service"] = $app->share(function ($app) {
-            return new UserService($app["orm.em"]);
-        });
+                    return new UserService($app["orm.em"]);
+                });
         $app["post_service"] = $app->share(function ($app) {
-            return new PostService($app["orm.em"]);
-        });
-        $app["account_service"]=$app->share(function($app){
-            return new AccountService($app['orm.em']);
-        });
-        
+                    return new PostService($app["orm.em"]);
+                });
+        $app["account_service"] = $app->share(function($app) {
+                    return new AccountService($app['orm.em']);
+                });
+        $app['current_account'] = $app->share(function($app) {
+                    if ($app['security']->isGranted("IS_AUTHENTICATED_FULLY")) {
+                        $account = $app["account_service"]->findOneBy(array(
+                            "user" => $app['security']->getToken()->getUser()));
+                        //$app['logger']->info(print_r($account, true));
+                        return $account;
+                    }
+                });
         /* default controller */
         $app["default_controller"] = $app->share(function (Application $app) {
-            return new DefaultController();
-        });
+                    return new DefaultController();
+                });
         $app->register(new ServiceControllerServiceProvider);
         $app->register(new HttpCacheServiceProvider, array(
             "http_cache.cache_dir" => $app['temp'] . "/cache/",
         ));
         $app->register(new TwigServiceProvider, array(
-            "twig.path"    => array(__DIR__ . "/Resources/views/"),
+            "twig.path" => array(__DIR__ . "/Resources/views/"),
             "twig.options" => array(
                 "cache" => $app["temp"] . "/twig/",
             ),
@@ -91,68 +99,67 @@ class Config implements ServiceProviderInterface
         $app->register(new DoctrineServiceProvider, array(
             "db.options" => array(
                 "driver" => "pdo_mysql",
-                "dbname"=>getenv("BLOG_DBNAME"),
-                "password"=>getenv("BLOG_PASSWORD"),               
-                "user"=>getenv("BLOG_USER"),
-                "host"=>getenv("BLOG_HOST"),
-                "path"=>getenv("BLOG_PATH"),
-                "memory"=>getenv("BLOG_MEMORY")
+                "dbname" => getenv("BLOG_DBNAME"),
+                "password" => getenv("BLOG_PASSWORD"),
+                "user" => getenv("BLOG_USER"),
+                "host" => getenv("BLOG_HOST"),
+                "path" => getenv("BLOG_PATH"),
+                "memory" => getenv("BLOG_MEMORY")
             )
         ));
         $app->register(new DoctrineORMServiceProvider, array(
-            "orm.proxy_dir"      => __DIR__ . "/Proxy/",
+            //"orm.cache"=>new FilesystemCache(__DIR__."/../temp/orm/"),
+            "orm.proxy_dir" => __DIR__ . "/Proxy/",
             "orm.driver.configs" => array(
                 "default" => array(
-                    "type"      => "yaml",
-                    "paths"     => array(__DIR__ . "/Resources/doctrine"),
+                    "type" => "yaml",
+                    "paths" => array(__DIR__ . "/Resources/doctrine"),
                     "namespace" => 'Entity',
                 )
             )
         ));
         $app->register(new SecurityServiceProvider, array(
-            "security.firewalls"      => array(
+            "security.firewalls" => array(
                 "protected" => array(
                     "anonymous" => TRUE,
-                    "pattern"   => "^/",
-                    "form"      => array(
-                        "login_path"          => "/login",
-                        "check_path"          => "/private/authenticate",
+                    "pattern" => "^/",
+                    "form" => array(
+                        "login_path" => "/login",
+                        "check_path" => "/private/authenticate",
                         "default_target_path" => "/private/profile"
                     ),
-                    "logout"    => array(
+                    "logout" => array(
                         "logout_path" => "/private/logout",
-                        "target"      => "/",
+                        "target" => "/",
                     ),
-                    "users"     => $app->share(function ($app) {
-                        return $app["user_provider"];
-                    })
+                    "users" => $app->share(function ($app) {
+                                return $app["user_provider"];
+                            })
                 )
             ),
             "security.role_hierarchy" => array("ROLE_USER" => array()),
-            "security.access_rules"   => array(
+            "security.access_rules" => array(
                 array("^/private", "ROLE_USER"),
             )
         ));
-
-        $app->match("/private", function () {
-            return "this is a private area";
-        });
-
-
-        $app->mount("/", $app["default_controller"]);
     }
 
-    public function boot(Application $app)
-    {
+    public function boot(Application $app) {
         /* @note @silex FR : ajouter des filtres à Twig
          * EN : add filters to twig
          */
         $app["twig"] = $app->share($app->extend("twig", function ($twig, $app) {
-            $twig->addFilter("md5", new Twig_Filter_Function("md5"));
-            $twig->addFilter("gravatar", new Twig_Filter_Function(function ($email, $size = 128) {
-                return "http://www.gravatar.com/avatar/" . md5($email) . "?d=mm&s=$size";
-            }));
-            return $twig;
-        }));
+                            $twig->addFilter("md5", new Twig_Filter_Function("md5"));
+                            $twig->addFilter("gravatar", new Twig_Filter_Function(function ($email, $size = 128) {
+                                        return "http://www.gravatar.com/avatar/" . md5($email) . "?d=mm&s=$size";
+                                    }));
+                            return $twig;
+                        }));
+
+        $app->match("/private", function () {
+                    return "this is a private area";
+                });
+        $app->mount("/", $app["default_controller"]);
     }
+
 }

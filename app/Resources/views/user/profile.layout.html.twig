@@ -1,17 +1,24 @@
 {% extends "common/layout.html.twig" %}
 {% block content %}
-<h5>User profile</h5>
 <div class="row">
     <div class="span4">
-        <p><img src="{{ account.email|gravatar(128) }}" alt=""></p>
-
-        <p>Nickname : {{ account.username }}</p>
-        <p>Last Seen : {{ account.updatedAt|date('Y-m-d') }}</p>
-        <p class="muted italic"><i> &OpenCurlyDoubleQuote; {{account.bio}} &CloseCurlyDoubleQuote; </i></p>
-        {% if account.user == app.security.token.user %}
-        <p><a href='{{path("profile_edit")}}'>edit account</a> </p>
+        {% if (account is defined) or (app.security.isGranted('IS_AUTHENTICATED_FULLY') ) %}
+            {% if account is not defined %}{% set account = app.current_account %} {% endif %}
+            <p>{% if account == app.current_account %}<i> this is you ! </i>{%endif%}</p>
+            <p><a href='{{path('public_profile',{username:account.username})}}'>
+                  <img src="{{ account.email|gravatar(128) }}" alt="avatar">
+                  </a></p>
+            <p>Nickname : {{ account.username }}</p>
+            <p>Last Seen : {{ account.updatedAt|date('Y-m-d') }}</p>
+            <p class="muted italic">
+                <i> &OpenCurlyDoubleQuote; {{account.bio}} &CloseCurlyDoubleQuote; </i></p>
+            {% if account.user == app.security.token.user %}
+            <p><a  href='{{ path("profile_edit") }}' >edit account</a> </p>
+            {% endif %}
         {% endif %}
-    </div>
-        {% block subcontent %}
-        {% endblock %}
+            &nbsp;
+        </div>
+        <div class='span8'>{% block subcontent %}
+        {% endblock %}</div>
+        
 {% endblock %}

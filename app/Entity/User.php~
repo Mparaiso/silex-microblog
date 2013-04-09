@@ -40,7 +40,15 @@ class User implements UserInterface, Serializable {
      * @var \Doctrine\Common\Collections\Collection
      */
     private $roles;
+    /**
+     *
+     * @var \Datetime
+     */
     private $created_at;
+    /**
+     *
+     * @var \Datetime
+     */
     private $updated_at;
 
     /**
@@ -212,7 +220,7 @@ class User implements UserInterface, Serializable {
     }
 
     public function __toString() {
-        return $this->email;
+        return $this->username;
     }
 
     /**

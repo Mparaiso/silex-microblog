@@ -28,10 +28,34 @@ Entity\Account:
       type: datetime
     updated_at:
       type: datetime
+  oneToMany:
+    posts:
+      targetEntity: Entity\Post
+      mappedBy: account
   oneToOne:
     user:
       targetEntity: Entity\User
+      inversedBy: account
       cascade: ["all"]
+  manyToMany:
+    ## EN : the people this account follows 
+    ## FR : les gens que ce compte suit
+    followed:
+      targetEntity: Entity\Account
+      mappedBy: followers
+    ## EN : the people that follow this account 
+    ## FR : les gens qui suivent ce compte
+    followers:
+      targetEntity: Entity\Account
+      inversedBy: followed
+      joinTable:
+        name: blog_followers
+        joinColumns:
+          account_id:
+            referencedColumnName: id
+        inverseJoinColumns:
+          follower_id:
+            referencedColumnName: id
 #      joinColumn:
 #        name: user_id
 #        referencedColumnName: id

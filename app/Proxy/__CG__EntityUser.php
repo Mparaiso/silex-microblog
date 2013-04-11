@@ -171,10 +171,22 @@ class User extends \Entity\User implements \Doctrine\ORM\Proxy\Proxy
         return parent::unserialize($serialized);
     }
 
+    public function setAccount(\Entity\Account $account = NULL)
+    {
+        $this->__load();
+        return parent::setAccount($account);
+    }
+
+    public function getAccount()
+    {
+        $this->__load();
+        return parent::getAccount();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'username', 'password', 'salt', 'created_at', 'updated_at', 'posts', 'roles');
+        return array('__isInitialized__', 'id', 'username', 'password', 'salt', 'created_at', 'updated_at', 'account', 'roles');
     }
 
     public function __clone()

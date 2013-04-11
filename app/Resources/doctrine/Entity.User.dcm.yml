@@ -25,14 +25,18 @@ Entity\User:
       type: datetime
     updated_at:
       type: datetime
-  oneToMany:
-    posts:
-      targetEntity: Entity\Post
-      mappedBy: user
-      cascade: ["persist","merge"]
+#  oneToMany:
+#    posts:
+#      targetEntity: Entity\Post
+#      mappedBy: user
+#      cascade: ["persist","merge"]
   manyToMany:
     roles:
       targetEntity: Entity\Role
+  oneToOne:
+    account:
+      targetEntity: Entity\Account
+      mappedBy: user
 #      inversedBy: users
       #joinTable: blog_users_roles
 

@@ -147,10 +147,64 @@ class Account extends \Entity\Account implements \Doctrine\ORM\Proxy\Proxy
         return parent::getAccount();
     }
 
+    public function addFollower(\Entity\Account $followers)
+    {
+        $this->__load();
+        return parent::addFollower($followers);
+    }
+
+    public function removeFollower(\Entity\Account $followers)
+    {
+        $this->__load();
+        return parent::removeFollower($followers);
+    }
+
+    public function getFollowers()
+    {
+        $this->__load();
+        return parent::getFollowers();
+    }
+
+    public function addFollowed(\Entity\Account $followed)
+    {
+        $this->__load();
+        return parent::addFollowed($followed);
+    }
+
+    public function removeFollowed(\Entity\Account $followed)
+    {
+        $this->__load();
+        return parent::removeFollowed($followed);
+    }
+
+    public function getFollowed()
+    {
+        $this->__load();
+        return parent::getFollowed();
+    }
+
+    public function addPost(\Entity\Post $posts)
+    {
+        $this->__load();
+        return parent::addPost($posts);
+    }
+
+    public function removePost(\Entity\Post $posts)
+    {
+        $this->__load();
+        return parent::removePost($posts);
+    }
+
+    public function getPosts()
+    {
+        $this->__load();
+        return parent::getPosts();
+    }
+
 
     public function __sleep()
     {
-        return array('__isInitialized__', 'id', 'username', 'email', 'bio', 'last_login', 'created_at', 'updated_at', 'user');
+        return array('__isInitialized__', 'id', 'username', 'email', 'bio', 'last_login', 'created_at', 'updated_at', 'user', 'posts', 'followed', 'followers');
     }
 
     public function __clone()

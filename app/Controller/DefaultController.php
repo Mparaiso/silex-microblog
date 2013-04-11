@@ -155,6 +155,47 @@ class DefaultController implements ControllerProviderInterface {
         ));
     }
 
+    function profileFollow(Request $req, Application $app) {
+        $username = $req->get('username');
+        $submit = $req->get('follow');
+        if ("POST" === $req->getMethod() && $submit != null) {
+            $user_account = $app['current_account'];
+            $friend = $app['account_service']->findOneBy(array('username' => $username));
+            if ($friend == null)
+                $app->abort(500);
+
+            $result = $app['account_service']->follow($user_account, $friend);
+            if ($result) {
+                $app['session']->getFlashBag()->add("success", "You are now following $username");
+            } else {
+                $app['session']->getFlashBag()->add("error", "You are already following $username");
+            }
+            return $app->redirect($req->headers->get('referer'));
+        } else {
+            $app->abort(500);
+        }
+    }
+
+    function profileUnfollow(Request $req, Application $app) {
+        $username = $req->get('username');
+        $submit = $req->get('unfollow');
+        if ("POST" === $req->getMethod() && $submit != null) {
+            $user_account = $app['current_account'];
+            $friend = $app['account_service']->findOneBy(array('username' => $username));
+            if ($friend == null)
+                $app->abort(500);
+            $result = $app['account_service']->unfollow($user_account, $friend);
+            if ($result) {
+                $app['session']->getFlashBag()->add("success", "You are not following $username anymore");
+            } else {
+                $app['session']->getFlashBag()->add("error", "You are already following $username");
+            }
+            return $app->redirect($req->headers->get('referer'));
+        } else {
+            $app->abort(500);
+        }
+    }
+
     function profileIndex(Request $req, Application $app, $username = NULL) {
         $offset = intval($req->query->get('offset', 0));
         $limit = intval($req->query->get('limit', 10));
@@ -164,8 +205,13 @@ class DefaultController implements ControllerProviderInterface {
             $app["session"]->getFlashBag()->add("error", "Account with username $username not found !");
             return $app->redirect($app["url_generator"]->generate("index"));
         }
-        $posts = $app["post_service"]->findBy(array("account" => $account), array(
-            "created_at" => "DESC"), $limit, $offset * $limit);
+        if ($account === $app['current_account']) {
+            $posts = $app["post_service"]->findFollowedAccountPosts($app['current_account'],$limit,$offset*$limit);
+        } else {
+            $posts = $app["post_service"]->findBy(array("account" => $account), array(
+                "created_at" => "DESC"), $limit, $offset * $limit);
+        }
+
         return $app["twig"]->render("user/profile.index.html.twig", array(
                     "offset" => $offset,
                     "limit" => $limit,
@@ -227,6 +273,10 @@ class DefaultController implements ControllerProviderInterface {
                 ->bind("profile_addpost");
         $controllers->match('/search', array($this, "search"))
                 ->bind("search");
+        $controllers->post("/private/profile/follow", array($this, 'profileFollow'))
+                ->bind("profile_follow");
+        $controllers->post('/private/profile/unfollow', array($this, 'profileUnfollow'))
+                ->bind('profile_unfollow');
         return $controllers;
     }
 

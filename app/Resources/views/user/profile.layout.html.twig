@@ -6,19 +6,50 @@
             {% if account is not defined %}{% set account = app.current_account %} {% endif %}
             <p>{% if account == app.current_account %}<i> this is you ! </i>{%endif%}</p>
             <p><a href='{{path('public_profile',{username:account.username})}}'>
-                  <img src="{{ account.email|gravatar(128) }}" alt="avatar">
-                  </a></p>
+                    <img src="{{ account.email|gravatar(128) }}" alt="avatar">
+                </a></p>
             <p>Nickname : {{ account.username }}</p>
             <p>Last Seen : {{ account.updatedAt|date('Y-m-d') }}</p>
             <p class="muted italic">
-                <i> &OpenCurlyDoubleQuote; {{account.bio}} &CloseCurlyDoubleQuote; </i></p>
+                {% if account.bio is not null %}
+                    <i> &OpenCurlyDoubleQuote; {{account.bio}} &CloseCurlyDoubleQuote; </i></p>
+                {% endif %}
             {% if account.user == app.security.token.user %}
-            <p><a  href='{{ path("profile_edit") }}' >edit account</a> </p>
+                <p><a  href='{{ path("profile_edit") }}' >edit account</a> </p>
+            {% if account.followed.count() > 0 %}
+                <div>
+                    <h5>People i follow</h5>
+            {% for followed in account.followed %}
+                    <span><a href="{{ path('public_profile', { username : followed.username} )}}">
+                            <img src="{{ followed.email|gravatar(32)}}" alt="avatar" /></a></span>
+            {% endfor %}
+                </div>
+            {% endif %}
+            {% elseif app.security.isGranted('IS_AUTHENTICATED_FULLY') %}
+                    {% if not app.security.token.user.account.followed.contains(account) %}
+                <form action="{{path('profile_follow')}}" method='POST'>
+                    <input type="hidden" name="username" value='{{account.username}}' />
+                    <input  class='btn'  type="submit" value="follow" name='follow' />
+                </form>
+                    {% else %}
+                <form action="{{path('profile_unfollow')}}" method='POST'>
+                    <input type="hidden" name="username" value='{{account.username}}' />
+                    <input  class='btn'  type="submit" value="unfollow" name='unfollow' />
+                </form>
+                {% endif %}
+            {% endif %}
+            {% if  account.followers.count() > 0 %}
+                <h5>Followers</h5>
+                <div>
+                {% for a in account.followers %}
+                        <span><a href="{{ path( 'public_profile',{username:a.username} ) }}"><img src="{{ a.email|gravatar(32)}}" alt="avatar" /></a></span>
+                {% endfor %}
+                            </div>
             {% endif %}
         {% endif %}
-            &nbsp;
-        </div>
-        <div class='span8'>{% block subcontent %}
+                            &nbsp;
+                        </div>
+                        <div class='span8'>{% block subcontent %}
         {% endblock %}</div>
-        
+
 {% endblock %}

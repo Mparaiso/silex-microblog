@@ -4,3 +4,4 @@ temp/*
 composer.lock
 /nbproject/private/
 nbproject/*
+log/*

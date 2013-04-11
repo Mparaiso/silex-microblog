@@ -246,4 +246,87 @@ class Account {
     {
         return $this->account;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $followers;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->followers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
+    /**
+     * Add followers
+     *
+     * @param \Entity\Account $followers
+     * @return Account
+     */
+    public function addFollower(\Entity\Account $followers)
+    {
+        $this->followers[] = $followers;
+    
+        return $this;
+    }
+
+    /**
+     * Remove followers
+     *
+     * @param \Entity\Account $followers
+     */
+    public function removeFollower(\Entity\Account $followers)
+    {
+        $this->followers->removeElement($followers);
+    }
+
+    /**
+     * Get followers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFollowers()
+    {
+        return $this->followers;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $followed;
+
+
+    /**
+     * Add followed
+     *
+     * @param \Entity\Account $followed
+     * @return Account
+     */
+    public function addFollowed(\Entity\Account $followed)
+    {
+        $this->followed[] = $followed;
+    
+        return $this;
+    }
+
+    /**
+     * Remove followed
+     *
+     * @param \Entity\Account $followed
+     */
+    public function removeFollowed(\Entity\Account $followed)
+    {
+        $this->followed->removeElement($followed);
+    }
+
+    /**
+     * Get followed
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFollowed()
+    {
+        return $this->followed;
+    }
 }

@@ -2,11 +2,13 @@
 
 namespace Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use \Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\Validator\Constraints as Assert;
 // DON'T forget this use statement!!!
+
+
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
  * Account
@@ -29,7 +31,7 @@ class Account {
     private $bio;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $last_login;
 
@@ -92,7 +94,7 @@ class Account {
     /**
      * Set last_login
      *
-     * @param \DateTime $lastLogin
+     * @param DateTime $lastLogin
      * @return Account
      */
     public function setLastLogin($lastLogin) {
@@ -104,7 +106,7 @@ class Account {
     /**
      * Get last_login
      *
-     * @return \DateTime 
+     * @return DateTime 
      */
     public function getLastLogin() {
         return $this->last_login;
@@ -158,19 +160,19 @@ class Account {
     }
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $created_at;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $updated_at;
 
     /**
      * Set created_at
      *
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
      * @return Account
      */
     public function setCreatedAt($createdAt) {
@@ -182,7 +184,7 @@ class Account {
     /**
      * Get created_at
      *
-     * @return \DateTime 
+     * @return DateTime 
      */
     public function getCreatedAt() {
         return $this->created_at;
@@ -191,7 +193,7 @@ class Account {
     /**
      * Set updated_at
      *
-     * @param \DateTime $updatedAt
+     * @param DateTime $updatedAt
      * @return Account
      */
     public function setUpdatedAt($updatedAt) {
@@ -203,13 +205,13 @@ class Account {
     /**
      * Get updated_at
      *
-     * @return \DateTime 
+     * @return DateTime 
      */
     public function getUpdatedAt() {
         return $this->updated_at;
     }
 
-    /** contraintes de validation **/
+    /** contraintes de validation * */
     public static function loadValidatorMetadata(ClassMetadata $metadata) {
         // username doit être unique //
         $metadata->addConstraint(new UniqueEntity(array(
@@ -223,17 +225,15 @@ class Account {
      */
     private $account;
 
-
     /**
      * Set account
      *
      * @param \Entity\Account $account
      * @return Account
      */
-    public function setAccount(\Entity\Account $account = null)
-    {
+    public function setAccount(\Entity\Account $account = null) {
         $this->account = $account;
-    
+
         return $this;
     }
 
@@ -242,8 +242,121 @@ class Account {
      *
      * @return \Entity\Account 
      */
-    public function getAccount()
-    {
+    public function getAccount() {
         return $this->account;
     }
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $followers;
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->followers = new ArrayCollection();
+        $this->followed = new ArrayCollection();
+    }
+
+    /**
+     * Add followers
+     *
+     * @param \Entity\Account $followers
+     * @return Account
+     */
+    public function addFollower(\Entity\Account $followers) {
+        $this->followers[] = $followers;
+
+        return $this;
+    }
+
+    /**
+     * Remove followers
+     *
+     * @param \Entity\Account $followers
+     */
+    public function removeFollower(\Entity\Account $followers) {
+        $this->followers->removeElement($followers);
+    }
+
+    /**
+     * Get followers
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFollowers() {
+        return $this->followers;
+    }
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $followed;
+
+    /**
+     * Add followed
+     *
+     * @param \Entity\Account $followed
+     * @return Account
+     */
+    public function addFollowed(\Entity\Account $followed) {
+        $this->followed[] = $followed;
+
+        return $this;
+    }
+
+    /**
+     * Remove followed
+     *
+     * @param \Entity\Account $followed
+     */
+    public function removeFollowed(\Entity\Account $followed) {
+        $this->followed->removeElement($followed);
+    }
+
+    /**
+     * Get followed
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFollowed() {
+        return $this->followed;
+    }
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $posts;
+
+    /**
+     * Add posts
+     *
+     * @param \Entity\Post $posts
+     * @return Account
+     */
+    public function addPost(\Entity\Post $posts) {
+        $this->posts[] = $posts;
+
+        return $this;
+    }
+
+    /**
+     * Remove posts
+     *
+     * @param \Entity\Post $posts
+     */
+    public function removePost(\Entity\Post $posts) {
+        $this->posts->removeElement($posts);
+    }
+
+    /**
+     * Get posts
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPosts() {
+        return $this->posts;
+    }
+
 }

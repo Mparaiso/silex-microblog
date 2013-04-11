@@ -21,6 +21,9 @@ class AccountService {
     }
 
     function save(Account $account) {
+        if ($account->getCreatedAt() === null) {
+            $account->setCreatedAt(new \DateTime);
+        }
         $account->setUpdatedAt(new \DateTime);
         $this->em->persist($account);
         $this->em->flush();
@@ -51,7 +54,7 @@ class AccountService {
     function findOneBy(array $criteria) {
         return $this->em->getRepository(self::ENTITY)->findOneBy($criteria);
     }
-    
+
     /**
      * 
      * @param string $username
@@ -62,6 +65,43 @@ class AccountService {
             $username = uniqid("user");
         }
         return $username;
+    }
+
+    /**
+     * FR : ajoute un ami si pas ami
+     * @param \Entity\Account $account
+     * @param \Entity\Account $follower
+     * @return Account
+     */
+    function follow(Account $account, Account $friend) {
+        if (!$this->isFollowing($account, $friend)) {
+            $account->addFollowed($friend);
+            $friend->addFollower($account);
+            return $this->save($account);
+        }
+    }
+
+    /**
+     * FR : enlève un ami si $follower est un ami
+     * @param \Entity\Account $account
+     * @param \Entity\Account $follower
+     */
+    function unfollow(Account $account, Account $friend) {
+        if ($this->isFollowing($account, $friend)) {
+            $account->getFollowed()->removeElement($friend);
+            $friend->getFollowers()->removeElement($account);
+            return $this->save($account);
+        }
+    }
+
+    /**
+     * FR : retourne vrai si le compte $account suit $follower
+     * @param \Entity\Account $account
+     * @param \Entity\Account $follower
+     * @return bool
+     */
+    function isFollowing(Account $account, Account $friend) {
+        return $account->getFollowed()->contains($friend);
     }
 
 }

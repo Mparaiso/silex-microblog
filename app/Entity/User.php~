@@ -50,6 +50,11 @@ class User implements UserInterface, Serializable {
      * @var \Datetime
      */
     private $updated_at;
+    
+    /**
+     * @var string
+     */
+    private $account;
 
     /**
      * Constructor
@@ -241,4 +246,27 @@ class User implements UserInterface, Serializable {
                 ) = unserialize($serialized);
     }
 
+
+    /**
+     * Set account
+     *
+     * @param \Entity\Account $account
+     * @return User
+     */
+    public function setAccount(\Entity\Account $account = null)
+    {
+        $this->account = $account;
+    
+        return $this;
+    }
+
+    /**
+     * Get account
+     *
+     * @return \Entity\Account 
+     */
+    public function getAccount()
+    {
+        return $this->account;
+    }
 }

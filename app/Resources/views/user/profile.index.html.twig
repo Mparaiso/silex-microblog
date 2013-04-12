@@ -1,5 +1,5 @@
 {% extends "user/profile.layout.html.twig" %}
-{% block subtitle %} <h5>User profile</h5>{% endblock %}
+{% block subtitle %} <h5>{{ 'User profile'|trans }}</h5>{% endblock %}
 {% block subcontent %}
 <div class="span8">
         {% if app.security.isGranted('IS_AUTHENTICATED_FULLY') %}

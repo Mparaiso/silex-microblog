@@ -1,6 +1,6 @@
 {% extends 'common/layout.html.twig' %}
 {% block content %}
-    <h1>Sign in</h1>
+    <h1>{{ 'Sign in'|trans}}</h1>
     <form action="" id="login" method="POST" name="{{form.vars.name}}">
         <p>
             {# @note @silex afficher un champ de formulaire #}
@@ -13,7 +13,7 @@
             {# @note @silex afficher le reste du formulaire #}
             {{ form_rest(form)}}
         </p><p>
-        <input type="submit" value="Sign in">
+        <input type="submit" value="{{'Sign in'|trans}}">
     </p>
     </form>
     <script type="text/javascript">

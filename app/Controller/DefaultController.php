@@ -8,13 +8,14 @@ use Entity\Search;
 use Entity\User;
 use Form\AccountType;
 use Form\LoginType;
-use Form\PostSearchType;
 use Form\PostType;
 use LightOpenID;
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -29,8 +30,8 @@ class DefaultController implements ControllerProviderInterface {
     /**
      * EN : display post search resutls <br/>
      * FR : affiche  les résultats d'une recherche <br/>
-     * @param \Symfony\Component\HttpFoundation\Request $req
-     * @param \Silex\Application $app
+     * @param Request $req
+     * @param Application $app
      * @return string
      */
     function search(Request $req, Application $app) {
@@ -206,7 +207,7 @@ class DefaultController implements ControllerProviderInterface {
             return $app->redirect($app["url_generator"]->generate("index"));
         }
         if ($account === $app['current_account']) {
-            $posts = $app["post_service"]->findFollowedAccountPosts($app['current_account'],$limit,$offset*$limit);
+            $posts = $app["post_service"]->findFollowedAccountPosts($app['current_account'], $limit, $offset * $limit);
         } else {
             $posts = $app["post_service"]->findBy(array("account" => $account), array(
                 "created_at" => "DESC"), $limit, $offset * $limit);
@@ -249,6 +250,14 @@ class DefaultController implements ControllerProviderInterface {
         ));
     }
 
+    function setLocale(Request $req, Application $app, $locale) {
+        $referer = $req->headers->get("referer");
+        $req->cookies->set("locale", $locale);
+        $response =  new RedirectResponse($referer);
+        $response->headers->setCookie(new Cookie("locale",$locale));
+        return $response;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -277,6 +286,9 @@ class DefaultController implements ControllerProviderInterface {
                 ->bind("profile_follow");
         $controllers->post('/private/profile/unfollow', array($this, 'profileUnfollow'))
                 ->bind('profile_unfollow');
+        $controllers->match('/set-locale/{locale}', array($this, 'setLocale'))
+                ->bind("set_locale")
+                ->value("locale", "en");
         return $controllers;
     }
 

@@ -13,7 +13,8 @@ class LoginType extends AbstractType
     {
         $builder->add("openid", "text", array("required" => TRUE, "constraints" => array(
             new Assert\Url())))
-            ->add("remember_me", "checkbox", array('required' => FALSE));
+            //->add("remember_me", "checkbox", array('required' => FALSE))
+            ;
     }
 
     /**

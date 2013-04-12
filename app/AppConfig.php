@@ -1,23 +1,22 @@
 <?php
 
-use Silex\ServiceProviderInterface;
-use Service\PostService;
-use Service\UserService;
-use Silex\Provider\MonologServiceProvider;
-use Silex\Provider\TwigServiceProvider;
-use Silex\Provider\ValidatorServiceProvider;
-use Silex\Provider\TranslationServiceProvider;
-use Silex\Provider\FormServiceProvider;
 use Mparaiso\Provider\ConsoleServiceProvider;
-use Silex\Provider\SessionServiceProvider;
-use Silex\Provider\UrlGeneratorServiceProvider;
-use Silex\Provider\DoctrineServiceProvider;
 use Mparaiso\Provider\DoctrineORMServiceProvider;
-use Silex\Provider\SecurityServiceProvider;
-use Silex\Provider\HttpCacheServiceProvider;
-use Silex\Provider\ServiceControllerServiceProvider;
-use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
 use Silex\Application;
+use Silex\Provider\DoctrineServiceProvider;
+use Silex\Provider\FormServiceProvider;
+use Silex\Provider\HttpCacheServiceProvider;
+use Silex\Provider\MonologServiceProvider;
+use Silex\Provider\SecurityServiceProvider;
+use Silex\Provider\ServiceControllerServiceProvider;
+use Silex\Provider\SessionServiceProvider;
+use Silex\Provider\TranslationServiceProvider;
+use Silex\Provider\TwigServiceProvider;
+use Silex\Provider\UrlGeneratorServiceProvider;
+use Silex\Provider\ValidatorServiceProvider;
+use Silex\ServiceProviderInterface;
+use Symfony\Bridge\Doctrine\Security\User\EntityUserProvider;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * FR : Configuration principale de l'application
@@ -57,7 +56,13 @@ class AppConfig implements ServiceProviderInterface {
         $app->register(new ConsoleServiceProvider);
         $app->register(new FormServiceProvider);
         $app->register(new ValidatorServiceProvider);
-        $app->register(new TranslationServiceProvider, array("locale_fallback" => "en"));
+        $app->register(new TranslationServiceProvider, array(
+            "locale_fallback" => "en",
+        ));
+        $app->before(function(Request $req)use($app) {
+                    $app["locale"] = $req->cookies->get("locale", "en");
+                }
+        );
         $app->register(new SessionServiceProvider);
         $app->register(new UrlGeneratorServiceProvider);
         $app->register(new DoctrineServiceProvider, array(

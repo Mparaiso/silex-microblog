@@ -1,11 +1,11 @@
 <div class="pagination pagination-centered pagination-mini">
     <ul>
-        <li><a {% if offset <=0 %} class='disabled muted' {%else%} href="?offset=0" {%endif%} >First</a></li>
+        <li><a {% if offset <=0 %} class='disabled muted' {%else%} href="?offset=0" {%endif%} >{{ 'First'|trans}}</a></li>
         <li>
-            <a {% if offset <=0 %} class='disabled muted' {%else%} href="?offset={{offset-1}}" {%endif%} >Prev</a> 
+            <a {% if offset <=0 %} class='disabled muted' {%else%} href="?offset={{offset-1}}" {%endif%} >{{ 'Prev'|trans}}</a> 
         </li>
         <li>
-            <a {% if items < limit %} class='disabled muted' {%else%} href="?offset={{offset+1}}" {%endif%}>Next</a>
+            <a {% if items < limit %} class='disabled muted' {%else%} href="?offset={{offset+1}}" {%endif%}>{{ 'Next'|trans }}</a>
         </li>
     </ul>
 </div>

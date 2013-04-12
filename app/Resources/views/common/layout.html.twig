@@ -3,7 +3,7 @@
     {% if title is defined %}
             <title>{{ title }} - microblog</title>
     {% else %}
-            <title>Welcome to microblog</title>
+            <title>{{ 'Welcome to microblog'|trans }}</title>
     {% endif %}
     {% block stylesheets %}
             <link rel="stylesheet" href="{{ app.request.baseUrl }}/vendor/bootstrap/css/bootstrap.min.css">
@@ -21,29 +21,34 @@
                     {% if app.security.isGranted("ROLE_USER") %}
                                     <li>
                                         <a href="{{ path("public_profile",{username:app.current_account.username|url_encode}) }}">
-                                            Welcome {{ app.current_account.username }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ path("private_logout") }}">Logout</a></li>{% else %}
-                                    <li>
-                                        <a href="{{ path("login") }}">login</a></li>
+                                            {{ "Welcome"|trans }} {{ app.current_account.username }}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ path("private_logout") }}">{{'Logout'|trans}}</a></li>{% else %}
+                                        <li>
+                                            <a href="{{ path("login") }}">{{'Login'|trans}}</a></li>
                     {% endif %}
-                                </ul>
-                                {% include 'common/search.html.twig' %}
+                                        <li> {% include 'common/search.html.twig' %}</li>
+                                    </ul>
+                               
+                                    <ul class='nav pull-right'>
+                                        <li><a href="{{path("set_locale",{locale:"en"}) }} ">EN</a></li>
+                                        <li><a href="{{path("set_locale",{locale:"fr"}) }} ">FR</a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
 {% endblock %}
 
-                    <div class="container">
-    {% block subtitle%}<h5> Welcome to microblog </h5>{%endblock%}                        
+                        <div class="container">
+    {% block subtitle%}<h5> {{ 'Welcome to microblog'|trans }}  </h5>{%endblock%}                        
     {% block flash %}
         {% include "common/flash.html.twig" %}
     {% endblock %}
     {% block content %}
     {% endblock %}
-                        </div>
-                    </body>
-                </html>
+                            </div>
+                        </body>
+                    </html>

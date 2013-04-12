@@ -4,21 +4,21 @@
     <div class="span4">
         {% if (account is defined) or (app.security.isGranted('IS_AUTHENTICATED_FULLY') ) %}
             {% if account is not defined %}{% set account = app.current_account %} {% endif %}
-            <p>{% if account == app.current_account %}<i> this is you ! </i>{%endif%}</p>
+            <p>{% if account == app.current_account %}<i> {{ 'this is you'|trans }} ! </i>{%endif%}</p>
             <p><a href='{{path('public_profile',{username:account.username})}}'>
                     <img src="{{ account.email|gravatar(128) }}" alt="avatar">
                 </a></p>
-            <p>Nickname : {{ account.username }}</p>
-            <p>Last Seen : {{ account.updatedAt|date('Y-m-d') }}</p>
+            <p>{{"Nickname"|trans }} : {{ account.username }}</p>
+            <p>{{ 'Last Seen'|trans }} : {{ account.updatedAt|date('Y-m-d') }}</p>
             <p class="muted italic">
                 {% if account.bio is not null %}
                     <i> &OpenCurlyDoubleQuote; {{account.bio}} &CloseCurlyDoubleQuote; </i></p>
                 {% endif %}
             {% if account.user == app.security.token.user %}
-                <p><a  href='{{ path("profile_edit") }}' >edit account</a> </p>
+                <p><a  href='{{ path("profile_edit") }}' >{{ 'edit account'|trans}}</a> </p>
             {% if account.followed.count() > 0 %}
                 <div>
-                    <h5>People i follow</h5>
+                    <h5>{{ 'People i follow'|trans }}</h5>
             {% for followed in account.followed %}
                     <span><a href="{{ path('public_profile', { username : followed.username} )}}">
                             <img src="{{ followed.email|gravatar(32)}}" alt="avatar" /></a></span>
@@ -39,13 +39,15 @@
                 {% endif %}
             {% endif %}
             {% if  account.followers.count() > 0 %}
-                <h5>Followers</h5>
+                <h5>{{ 'Followers'|trans }}</h5>
                 <div>
                 {% for a in account.followers %}
                         <span><a href="{{ path( 'public_profile',{username:a.username} ) }}"><img src="{{ a.email|gravatar(32)}}" alt="avatar" /></a></span>
                 {% endfor %}
                             </div>
             {% endif %}
+               {% else %}
+                <p>{{ '_description'|trans}}</p>
         {% endif %}
                             &nbsp;
                         </div>

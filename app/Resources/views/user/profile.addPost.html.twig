@@ -5,6 +5,6 @@
 
     {{ form_row( form.body , {label:' ',attr: {rows:3,class:'span6'} } ) }}      
     {{form_rest(form)}}
-    <input type="submit" value="Post message" />
+    <input type="submit" value="{{ 'Post message'|trans }}" />
 
 </form>

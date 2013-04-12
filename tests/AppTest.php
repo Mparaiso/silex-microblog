@@ -7,7 +7,7 @@ class AppTest extends \Silex\WebTestCase
      */
     public function createApplication()
     {
-        $app =  new App();
+        $app =  new \App();
         $app->boot();
         return $app;
     }

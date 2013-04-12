@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Entity\Account;
 use Entity\User;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
+
 /**
  * EN : manage accounts
  * FR : gère les comptes utilisateurs
@@ -28,6 +29,9 @@ class AccountService {
             $account->setCreatedAt(new \DateTime);
         }
         $account->setUpdatedAt(new \DateTime);
+        if (!$this->isFollowing($account, $account)) {
+            $this->follow($account, $account);
+        }
         $this->em->persist($account);
         $this->em->flush();
         return $account;
@@ -35,8 +39,6 @@ class AccountService {
 
     function register(Account $account, User $user = null) {
         $account->setUsername($this->makeUserName($account->getUsername()));
-        $account->setCreatedAt(new \DateTime);
-        $account->setUpdatedAt(new \DateTime);
         if ($user != null) {
             $account->setUser($user);
         }
@@ -49,9 +51,7 @@ class AccountService {
         $account->getUser()->addRole($this->em->getRepository('Entity\Role')->findOneBy(array("role" => "ROLE_USER")));
         $account->getUser()->setCreatedAt(new \DateTime);
         $account->getUser()->setUpdatedAt(new \Datetime);
-        $this->em->persist($account);
-        $this->em->flush();
-        return $account;
+        return $this->save($account);
     }
 
     function findOneBy(array $criteria) {

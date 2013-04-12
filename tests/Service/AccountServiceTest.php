@@ -31,19 +31,23 @@ class AccountServiceTest extends WebTestCase {
         $this->app['account_service']->follow($a1, $a2);
         $this->assertNull($this->app['account_service']->follow($a1, $a2));
         $this->assertTrue($this->app['account_service']->isFollowing($a1, $a2));
-        $this->assertEquals(1, $a1->getFollowed()->count());
-        $this->assertEquals('susan', $a1->getFollowed()->first()->getUsername());
+        $this->assertEquals(2, $a1->getFollowed()->count());
+        $this->assertEquals('john', $a1->getFollowed()->first()->getUsername());
 //        \Doctrine\Common\Util\Debug::dump($a2);        
 //        \Doctrine\Common\Util\Debug::dump($a1);
-        $this->assertEquals(1, $a2->getFollowers()->count());
-        $this->assertEquals('john', $a2->getFollowers()->first()->getUsername());
+        $this->assertEquals(2, $a2->getFollowers()->count());
+        $this->assertEquals('susan', $a2->getFollowers()->first()->getUsername());
         $a = $this->app['account_service']->unfollow($a1, $a2);
         $this->assertNotNull($a);
         $this->assertFalse($this->app['account_service']->isFollowing($a1, $a2));
-        $this->assertEquals(0, $a1->getFollowed()->count());
-        $this->assertEquals(0, $a2->getFollowers()->count());
+        $this->assertEquals(1, $a1->getFollowed()->count());
+        $this->assertEquals(1, $a2->getFollowers()->count());
     }
 
+    /**
+     * FR : 4 comptes sont crées , chaque compte écrit un message , puis suit différents comptes
+     * EN : 4 accounts are created , some messages are posted and accounts follow each others
+     */
     function testFollowPosts() {
         $u[1] = new Account();
         $u[2] = new Account();

@@ -16,6 +16,7 @@
    BLOG_HOST database server address | localhost
    BLOG_PATH database path if sqlite
    BLOG_MEMORY true | false for sqlite
+ * BLOG_HOST blog host for openid authentication ( like http://localhost , http://myserver.com , etc.... )
  * BLOG_DRIVER pdo_mysql | etc ....
  * 
  * folders :

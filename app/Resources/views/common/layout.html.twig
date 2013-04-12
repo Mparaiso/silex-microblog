@@ -31,7 +31,7 @@
                     {% endif %}
                                         <li> {% include 'common/search.html.twig' %}</li>
                                     </ul>
-                               
+
                                     <ul class='nav pull-right'>
                                         <li><a href="{{path("set_locale",{locale:"en"}) }} ">EN</a></li>
                                         <li><a href="{{path("set_locale",{locale:"fr"}) }} ">FR</a></li>
@@ -46,6 +46,14 @@
     {% block subtitle%}<h5> {{ 'Welcome to microblog'|trans }}  </h5>{%endblock%}                        
     {% block flash %}
         {% include "common/flash.html.twig" %}
+    {% endblock %}
+    {% block noscript 
+<noscript>
+ <h1 class='alert alert-info'>
+{{ 'This application uses javascript , please enable javascript.'|trans }} 
+</h1>
+</noscript>
+   
     {% endblock %}
     {% block content %}
     {% endblock %}

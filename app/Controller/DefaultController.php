@@ -87,7 +87,7 @@ class DefaultController implements ControllerProviderInterface {
 
     function afterlogin(Request $req, Application $app) {
         /* @var $openid LightOpenID */
-        $openid = new LightOpenID("localhost");
+        $openid = new LightOpenID($app["blog.host"]);
         if ($openid->mode == "cancel") {
             $app->abort(500, 'User has canceled authentication!');
         } else {
@@ -137,7 +137,7 @@ class DefaultController implements ControllerProviderInterface {
             if ($form->isValid()) {
                 $datas = $form->getData();
                 /* @var $openid LightOpenID */
-                $openid = new LightOpenID("localhost");
+                $openid = new LightOpenID($app["blog.host"]);
                 // set the return url
                 $openid->returnUrl = $app["url_generator"]->generate("afterlogin", array(), TRUE);
                 if (!$openid->mode) {

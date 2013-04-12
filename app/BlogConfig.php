@@ -90,7 +90,7 @@ Share messages , follow other users , and have fun!"
             array("name" => "Wordpress", 'url' => "http://<add your wordpress username here>.wordpress.com/"),
             array("name" => "Blogger", 'url' => "http://<add your blog name here>.blogspot.com/"),
         );
-
+        $app["blog.host"] = getenv("BLOG_HOST");
         /* user service */
         $app["user_service"] = $app->share(function ($app) {
                     return new UserService($app["orm.em"]);

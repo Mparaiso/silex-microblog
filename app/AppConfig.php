@@ -71,7 +71,7 @@ class AppConfig implements ServiceProviderInterface {
                 "dbname" => getenv("BLOG_DBNAME"),
                 "password" => getenv("BLOG_PASSWORD"),
                 "user" => getenv("BLOG_USER"),
-                "host" => getenv("BLOG_HOST"),
+                "host" => getenv("BLOG_DBHOST"),
                 "path" => getenv("BLOG_PATH"),
                 "memory" => getenv("BLOG_MEMORY")
             )

@@ -31,7 +31,8 @@ the following server variables need to be defined :
 + BLOG_DBNAME database name
 + BLOG_PASSWORD database password 
 + BLOG_USER database username
-+ BLOG_HOST database server address | localhost
++ BLOG_DBHOST database server address | localhost
 + BLOG_PATH database path if sqlite
 + BLOG_MEMORY true | false for sqlite
 + BLOG_DRIVER pdo_mysql | etc ....
++ BLOG_HOST localhost ... used for the openid provider

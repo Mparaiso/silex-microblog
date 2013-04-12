@@ -7,6 +7,10 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\SecurityContext;
 use Entity\User;
 
+/***
+ * EN : manager users used with the security service
+ * FR : gère les utilisateurs liés au service de sécurité
+ */
 class UserService
 {
     protected $em;

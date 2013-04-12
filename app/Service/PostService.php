@@ -7,7 +7,10 @@ use Doctrine\ORM\EntityManager;
 use Entity\Account;
 use Entity\Post;
 use Entity\Search;
-
+/**
+ * EN : manage posts 
+ * FR : gère les messages écrits par les utilisateurs
+ */
 class PostService {
 
     protected $em;

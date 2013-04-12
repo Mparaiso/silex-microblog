@@ -6,7 +6,10 @@ use Doctrine\ORM\EntityManager;
 use Entity\Account;
 use Entity\User;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
-
+/**
+ * EN : manage accounts
+ * FR : gère les comptes utilisateurs
+ */
 class AccountService {
 
     private $em;

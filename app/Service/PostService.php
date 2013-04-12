@@ -34,13 +34,13 @@ class PostService {
         return $this->em->getRepository('Entity\Post')->findBy($criteria, $orderBy, $limit, $offset);
     }
 
-    function findFollowedAccountPosts(Account $account,$limit,$offset) {
+    function findFollowedAccountPosts(Account $account, $limit = null, $offset = null) {
         $query = $this->em->createQuery(" SELECT p FROM Entity\Post p JOIN Entity\Account a WHERE 
             a = :account AND p.account MEMBER of a.followed ORDER BY p.created_at DESC
         ");
-        $query->setMaxResults($limit);
-        $query->setFirstResult($offset);
-        return $query->execute(array("account"=>$account));
+        $limit != null AND $query->setMaxResults($limit);
+        $offset != null AND $query->setFirstResult($offset);
+        return $query->execute(array("account" => $account));
     }
 
 }
